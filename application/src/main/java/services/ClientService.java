@@ -1,10 +1,12 @@
 package services;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+
+import org.example.UserDto.UserDto;
+
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class ClientService {
 
@@ -13,14 +15,15 @@ public class ClientService {
     private int clientId = -1;
     private DataOutputStream dos;
     private DataInputStream dis;
+    private ObjectInputStream disObject;
 
     private static ClientService instance;
 
-    private ClientService() throws IOException {
+    private ClientService(String username) throws IOException {
         socket = new Socket(InetAddress.getLocalHost().getHostName(), PORT);
         dos = new DataOutputStream(socket.getOutputStream());
 
-        dos.writeUTF("/InitClient");
+        dos.writeUTF("/InitClient,"+ username);
         dos.flush();
         dis = new DataInputStream(socket.getInputStream());
         String id = dis.readUTF();
@@ -62,11 +65,23 @@ public class ClientService {
         t.start();
     }
 
-
-    public static ClientService getInstance() throws IOException {
+    public static ClientService getInstance(String username) throws IOException {
         if (instance == null) {
-            instance = new ClientService();
+            instance = new ClientService(username);
         }
         return instance;
+    }
+
+    public ArrayList<UserDto> getClientList(){
+        try {
+            dos.writeUTF("/getClientList");
+            dos.flush();
+            disObject = new ObjectInputStream(socket.getInputStream());
+            //TODO: make Serializable
+            ArrayList<UserDto> userDtos = (ArrayList<UserDto>) disObject.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
