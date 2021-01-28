@@ -38,22 +38,19 @@ public class GameController {
     public void initialize() {
         listMessages = FXCollections.observableArrayList();
         listviewMessages.setItems(listMessages);
+        byte[] imageBytes = Base64.getDecoder().decode(base64Img);
 
-        textfieldMessage.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent keyEvent) {
-                if (keyEvent.getCode().equals(KeyCode.ENTER)) {
-                    sendMessage();
-                }
+        imageView.setImage(new Image((new ByteArrayInputStream(imageBytes))));
+        textfieldMessage.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+                sendMessage();
             }
         });
     }
 
     @FXML
     public void onButtonGuessedClicked() {
-        byte[] imageBytes = Base64.getDecoder().decode(base64Img);
 
-        imageView.setImage(new Image((new ByteArrayInputStream(imageBytes))));
     }
 
     @FXML
@@ -70,9 +67,9 @@ public class GameController {
     }
 
     public static <T> void addItem(ListView<T> listView, T item) {
-        List<T> items = listView.getItems();
-        int index = items.size();
-        items.add(item);
-        listView.scrollTo(index);
+        List<T> messages = listView.getItems();
+        int lastIndex = messages.size();
+        messages.add(item);
+        listView.scrollTo(lastIndex);
     }
 }
