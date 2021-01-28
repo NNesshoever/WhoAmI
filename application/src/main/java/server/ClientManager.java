@@ -1,4 +1,7 @@
-import Dtos.UserDto;
+package server;
+
+
+import org.example.Dtos.UserDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +11,8 @@ public class ClientManager {
     private static List<Client> clients = new ArrayList<>();
     private static int lastId = 0;
 
-    public static synchronized List<UserDto> getClients(){
-    List<UserDto> clientDtos = new ArrayList<>();
+    public static synchronized ArrayList<UserDto> getClients(){
+    ArrayList<UserDto> clientDtos = new ArrayList<>();
 
       for(Client client : clients){
           clientDtos.add(new UserDto(client.getId(),client.getName()));

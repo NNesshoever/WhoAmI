@@ -1,4 +1,4 @@
-package org.example.UserDto;
+package org.example.Dtos;
 
 import java.io.Serializable;
 

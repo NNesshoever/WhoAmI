@@ -1,7 +1,7 @@
 package services;
 
 
-import org.example.UserDto.UserDto;
+import org.example.Dtos.UserDto;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -73,15 +73,16 @@ public class ClientService {
     }
 
     public ArrayList<UserDto> getClientList(){
+        ArrayList<UserDto> userDtos = null;
         try {
             dos.writeUTF("/getClientList");
             dos.flush();
             disObject = new ObjectInputStream(socket.getInputStream());
             //TODO: make Serializable
-            ArrayList<UserDto> userDtos = (ArrayList<UserDto>) disObject.readObject();
+            userDtos = (ArrayList<UserDto>) disObject.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return null;
+        return userDtos;
     }
 }

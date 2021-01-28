@@ -1,11 +1,10 @@
 package org.example;
 
 import java.io.IOException;
-import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.ArrayList;
 
 import javafx.fxml.FXML;
-import org.example.UserDto.UserDto;
+import org.example.Dtos.UserDto;
 import services.ClientService;
 
 public class PrimaryController {
