@@ -11,12 +11,7 @@ public class StartseiteController {
     Button LogoutButton;
 
     @FXML
-    public void RefreshPlayers(){
-
-    }
-    @FXML
-    public void LogoutUser(){
-        
+    public void RefreshPlayers() {
 
     }
 
