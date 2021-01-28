@@ -16,6 +16,7 @@ public class StartseiteController {
     }
     @FXML
     public void LogoutUser(){
+        
 
     }
 
