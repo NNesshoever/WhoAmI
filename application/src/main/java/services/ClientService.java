@@ -18,11 +18,12 @@ public class ClientService {
     private ObjectInputStream disObject;
 
     private static ClientService instance;
+    private static ClientService single_instance = null;
 
     private ClientService(String username) throws IOException {
         socket = new Socket(InetAddress.getLocalHost().getHostName(), PORT);
         dos = new DataOutputStream(socket.getOutputStream());
-
+        this.name = username;
         dos.writeUTF("/InitClient,"+ username);
         dos.flush();
         dis = new DataInputStream(socket.getInputStream());
@@ -66,10 +67,10 @@ public class ClientService {
     }
 
     public static ClientService getInstance(String username) throws IOException {
-        if (instance == null) {
-            instance = new ClientService(username);
+        if (single_instance == null) {
+            single_instance = new ClientService(username);
         }
-        return instance;
+        return single_instance;
     }
 
     public ArrayList<UserDto> getClientList(){
@@ -84,5 +85,9 @@ public class ClientService {
             e.printStackTrace();
         }
         return userDtos;
+    }
+
+    public int getClientId(){
+        return this.clientId;
     }
 }
