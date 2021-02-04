@@ -50,6 +50,7 @@ public class StartseiteController {
     private ClientService _clientService;
 
     public StartseiteController() {
+        //TODO: usernameTextField gibt es nicht
 //        try {
 //            String textValue = usernameTextField.getText();
 //            _clientService = ClientService.getInstance(textValue);
