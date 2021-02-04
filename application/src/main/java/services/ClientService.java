@@ -23,7 +23,6 @@ public class ClientService {
     private ClientService(String username) throws IOException {
         socket = new Socket(InetAddress.getLocalHost().getHostName(), PORT);
         dos = new DataOutputStream(socket.getOutputStream());
-        this.name = username;
         dos.writeUTF("/InitClient,"+ username);
         dos.flush();
         dis = new DataInputStream(socket.getInputStream());

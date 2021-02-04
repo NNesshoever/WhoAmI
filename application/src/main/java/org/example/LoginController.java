@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.example.Dtos.UserDto;
 import services.ClientService;
 
 import java.io.IOException;

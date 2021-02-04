@@ -1,21 +1,16 @@
 package org.example;
 
+import Dtos.UserDto;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
-import org.example.Dtos.UserDto;
 import services.ClientService;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import javafx.scene.control.TextField;
-import server.Client;
-import services.ClientService;
-
-import java.io.IOException;
 
 public class StartseiteController {
     ObservableList<UserDto> usersList;
@@ -45,6 +40,7 @@ public class StartseiteController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
     Button LogoutButton;
     @FXML
@@ -83,4 +79,3 @@ public class StartseiteController {
 
 
     }
-}
