@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Client {
-    private int test;
     private int id;
     private String name;
     private Map<Integer, Integer> clientMessageIndex = new HashMap<>();
