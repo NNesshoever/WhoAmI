@@ -1,4 +1,4 @@
-package org.example.Dtos;
+package Dtos;
 
 import java.io.Serializable;
 
@@ -10,6 +10,7 @@ public class UserDto implements Serializable {
         this.id = id;
         this.name = name;
     }
+    public UserDto(){}
 
     public int getId() {
         return id;
