@@ -1,7 +1,7 @@
 package services;
 
 
-import org.example.Dtos.UserDto;
+import Dtos.UserDto;
 
 import java.io.*;
 import java.net.InetAddress;

@@ -1,7 +1,7 @@
 package server;
 
 
-import org.example.Dtos.UserDto;
+import Dtos.UserDto;
 
 import java.util.ArrayList;
 import java.util.List;
