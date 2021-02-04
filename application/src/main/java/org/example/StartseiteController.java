@@ -10,6 +10,7 @@ import services.ClientService;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 import javafx.scene.control.TextField;
 
 public class StartseiteController {
@@ -22,13 +23,13 @@ public class StartseiteController {
     ListView<UserDto> PlayersList;
 
     @FXML
-    public void initialize(){
+    public void initialize() {
         usersList = FXCollections.observableArrayList();
         PlayersList.setItems(usersList);
         loadClientList();
     }
 
-    public void setUsername(String username){
+    public void setUsername(String username) {
         this.username = username;
     }
 
@@ -48,13 +49,13 @@ public class StartseiteController {
 
     private ClientService _clientService;
 
-    public StartseiteController(){
-        try {
-            String textValue = usernameTextField.getText();
-            _clientService = ClientService.getInstance(textValue);
-        }
-        catch (IOException e){//TODO: Open error Toast
-        }
+    public StartseiteController() {
+//        try {
+//            String textValue = usernameTextField.getText();
+//            _clientService = ClientService.getInstance(textValue);
+//        }
+//        catch (IOException e){//TODO: Open error Toast
+//        }
     }
 
     @FXML
@@ -66,8 +67,7 @@ public class StartseiteController {
         String message = "/GameRequest " + _clientService.getClientId();
         try {
             _clientService.sendText(message);
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             //TODO: Open error toast or something like that
         }
 
@@ -77,5 +77,10 @@ public class StartseiteController {
 
     }
 
+    @FXML
+    public void LogoutUser(){
 
     }
+
+
+}
