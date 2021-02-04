@@ -56,5 +56,13 @@ public class ClientManager {
         return null;
     }
 
+    public static synchronized void deleteClient(int clientID){
+        for(Client c : clients){
+            if(c.getId() == clientID){
+                clients.remove(c);
+            }
+        }
+    }
+
 
 }

@@ -4,8 +4,13 @@ import Dtos.UserDto;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.stage.Stage;
+import server.Client;
+import server.ClientManager;
 import services.ClientService;
 
 import java.io.IOException;
@@ -80,7 +85,17 @@ public class StartseiteController {
 
     @FXML
     public void LogoutUser(){
-
+        ClientManager.deleteClient(client.getClientId());
+        try {
+            Stage stage = (Stage) PlayersList.getScene().getWindow();
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("login.fxml"));
+            Scene scene = new Scene(loader.load());
+            stage.setScene(scene);
+            LoginController controller = loader.getController();
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
