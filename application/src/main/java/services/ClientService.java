@@ -72,6 +72,10 @@ public class ClientService {
         return single_instance;
     }
 
+    public static void setInstance(){
+        single_instance = null;
+    }
+
     public ArrayList<UserDto> getClientList(){
         ArrayList<UserDto> userDtos = null;
         try {

@@ -11,6 +11,7 @@ import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 import server.Client;
 import server.ClientManager;
+import server.ServerThread;
 import services.ClientService;
 
 import java.io.IOException;
@@ -84,8 +85,10 @@ public class StartseiteController {
     }
 
     @FXML
-    public void LogoutUser(){
-        ClientManager.deleteClient(client.getClientId());
+    public void LogoutUser() throws IOException {
+        String message = "/Quit";
+        ClientService.setInstance();
+        client.sendText(message);
         try {
             Stage stage = (Stage) PlayersList.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(App.class.getResource("login.fxml"));

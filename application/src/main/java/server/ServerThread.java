@@ -32,6 +32,7 @@ public class ServerThread extends Thread {
 
                     if (message.startsWith("/Quit")) {
                         socket.close();
+                        ClientManager.deleteClient(clientId);
                         return;
                     } else if (message.startsWith("/InitClient")) {
                         handleInitConnection(writer, message);
