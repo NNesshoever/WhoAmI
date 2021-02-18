@@ -57,12 +57,7 @@ public class ClientManager {
     }
 
     public static synchronized void deleteClient(int clientID) {
-        Client delete = new Client();
-        for (Client c : clients) {
-            if (c.getId() == clientID) {
-                delete = c;
-            }
-        }
+        Client delete = ClientManager.getClient(clientID);
         if (delete != null) {
             clients.remove(delete);
         }
