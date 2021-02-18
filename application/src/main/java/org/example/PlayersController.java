@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 import javafx.scene.control.TextField;
 
-public class StartseiteController {
+public class PlayersController {
     ObservableList<UserDto> usersList;
 
     private String username = "";
@@ -55,7 +55,7 @@ public class StartseiteController {
 
     private ClientService _clientService;
 
-    public StartseiteController() {
+    public PlayersController() {
         //TODO: usernameTextField gibt es nicht
 //        try {
 //            String textValue = usernameTextField.getText();
@@ -90,6 +90,7 @@ public class StartseiteController {
         ClientService.setInstance();
         client.sendText(message);
         try {
+            client.sendText("/Quit");
             Stage stage = (Stage) PlayersList.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(App.class.getResource("login.fxml"));
             Scene scene = new Scene(loader.load());

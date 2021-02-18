@@ -9,8 +9,6 @@ import javafx.stage.Stage;
 import services.ClientService;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Objects;
 
 public class LoginController {
 
@@ -26,12 +24,12 @@ public class LoginController {
             try {
                 ClientService.getInstance(textValue);
                 Stage stage = (Stage) loginTextField.getScene().getWindow();
-                FXMLLoader loader = new FXMLLoader(App.class.getResource("Startseite.fxml"));
+                FXMLLoader loader = new FXMLLoader(App.class.getResource("players.fxml"));
                 Scene scene = new Scene(loader.load());
                 stage.setScene(scene);
                 stage.setTitle(textValue);
 
-                StartseiteController controller = loader.getController();
+                PlayersController controller = loader.getController();
                 controller.setUsername(textValue);
 
                 stage.show();
