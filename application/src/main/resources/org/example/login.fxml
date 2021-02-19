@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -12,7 +13,7 @@
 
 <VBox alignment="CENTER" minHeight="500.0" minWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.LoginController">
    <children>
-      <Label text="Who am I?">
+      <Label text="Who am I?" textFill="#0099cb">
          <font>
             <Font name="Segoe UI" size="48.0" />
          </font>
@@ -30,7 +31,7 @@
             <Insets top="10.0" />
          </padding>
          <children>
-            <Label text="Name">
+            <Label text="Name" textFill="#8f8f91">
                <padding>
                   <Insets right="20.0" />
                </padding>
@@ -45,13 +46,17 @@
             </TextField>
          </children>
       </HBox>
-    <Button fx:id="loginButton" maxHeight="-Infinity" maxWidth="400.0" mnemonicParsing="false" onAction="#onLoginButtonClicked" text="Einloggen" VBox.vgrow="ALWAYS">
+    <Button fx:id="loginButton" maxWidth="400.0" mnemonicParsing="false" onAction="#onLoginButtonClicked" stylesheets="@styles.css" text="Einloggen">
          <VBox.margin>
             <Insets top="30.0" />
          </VBox.margin>
          <font>
             <Font size="14.0" />
          </font>
+         <styleClass>
+            <String fx:value="primary" />
+            <String fx:value="button" />
+         </styleClass>
       </Button>
    </children>
    <padding>
