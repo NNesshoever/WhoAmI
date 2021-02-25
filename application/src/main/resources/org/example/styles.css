@@ -1,3 +1,11 @@
+*{
+    -fx-text-fill: #8f8f91
+}
+
+.split-pane *.split-pane-divider {
+    -fx-padding: 0;
+}
+
 /* button base styles*/
 .button{
     -fx-padding: 0.7em 1.7em;
@@ -26,9 +34,26 @@
 .secondary:hover {
     -fx-background-color: rgb(58, 87, 131);
 }
-/*
-DD7373
-83B692
-D7B377
-https://coolors.co/dd7373-2b4162-0099cb-83b692-d7b377
-*/
+
+/* warning colors */
+.warning{
+    -fx-background-color: rgb(255, 193, 7);
+}
+.warning:pressed {
+    -fx-background-color: rgb(255, 214, 89);
+}
+.warning:hover {
+    -fx-background-color: rgb(224, 187, 74);
+}
+
+
+/* danger colors */
+.danger{
+    -fx-background-color: rgb(221, 115, 115);
+}
+.danger:pressed {
+    -fx-background-color: rgb(214, 79, 79);
+}
+.danger:hover {
+    -fx-background-color: rgb(219, 50, 50);
+}

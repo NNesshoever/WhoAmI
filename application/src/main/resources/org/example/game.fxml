@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Button?>
@@ -15,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane alignment="CENTER" hgap="10.0" minHeight="591.0" minWidth="750.0" prefHeight="591.0" prefWidth="750.0" vgap="10.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.GameController">
+<GridPane alignment="CENTER" hgap="10.0" minHeight="591.0" minWidth="750.0" prefHeight="591.0" prefWidth="750.0" stylesheets="@styles.css" vgap="10.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.GameController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="179.0" minWidth="9.0" prefWidth="9.0" />
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="688.0" minWidth="10.0" prefWidth="688.0" />
@@ -50,18 +51,22 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </VBox.margin>
                            <children>
-                              <Button fx:id="buttonSurrender" mnemonicParsing="false" onAction="#onButtonSurrenderClicked" text="Aufgeben">
+                              <Button fx:id="buttonSurrender" mnemonicParsing="false" onAction="#onButtonSurrenderClicked" styleClass="button, danger" stylesheets="@styles.css" text="Aufgeben">
                                  <font>
                                     <Font name="Segoe UI" size="12.0" />
                                  </font>
+                                 <styleClass>
+                                    <String fx:value="danger" />
+                                    <String fx:value="button" />
+                                 </styleClass>
                               </Button>
-                              <Button fx:id="buttonGuessed" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onButtonGuessedClicked" text="Erraten" />
+                              <Button fx:id="buttonGuessed" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onButtonGuessedClicked" styleClass="button, warning" text="Erraten" />
                            </children>
                            <opaqueInsets>
                               <Insets />
                            </opaqueInsets>
                         </HBox>
-                        <Label fx:id="labelDetails" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="65.0" prefWidth="669.0" text="Name: TestPerson1, Beruf, Kinder Geschlecht, Land">
+                        <Label fx:id="labelDetails" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="65.0" prefWidth="669.0" styleClass="text" text="Name: TestPerson1, Beruf, Kinder Geschlecht, Land">
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
@@ -80,12 +85,12 @@
          </GridPane.margin></ListView>
       <SplitPane dividerPositions="0.5" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="TOP">
          <items>
-            <TextField fx:id="textfieldMessage">
+            <TextField fx:id="textfieldMessage" styleClass="input-text">
                <font>
                   <Font name="Segoe UI" size="18.0" />
                </font>
             </TextField>
-            <Button fx:id="buttonSend" minWidth="70.0" mnemonicParsing="false" onAction="#OnButtonSendClicked" prefHeight="25.0" prefWidth="70.0" text="Senden">
+            <Button fx:id="buttonSend" minWidth="70.0" mnemonicParsing="false" onAction="#OnButtonSendClicked" prefHeight="38.0" prefWidth="105.0" styleClass="primary" text="Senden">
                <font>
                   <Font name="Segoe UI" size="14.0" />
                </font>
@@ -96,4 +101,7 @@
          </padding>
       </SplitPane>
    </children>
+   <padding>
+      <Insets bottom="10.0" />
+   </padding>
 </GridPane>
