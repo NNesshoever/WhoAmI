@@ -1,6 +1,9 @@
 package server;
 
+import Dtos.PersonDto;
+
 import java.io.IOException;
+import java.util.List;
 
 public class Application {
 

@@ -1,10 +1,66 @@
 [
   {
     "id": 1,
-    "name": "testPerson1"
+    "surname": "surname",
+    "lastname": "lastname",
+    "age": "1",
+    "height": "height",
+    "hairColor": "hairColor",
+    "eyeColor": "eyeColor",
+    "job": "job",
+    "accessoires": "accessoires",
+    "personality": ["personality"],
+    "relationship": "relationship",
+    "nationality": "nationality",
+    "production": ["production"],
+    "gender": "Gender"
   },
   {
     "id": 2,
-    "name": "testPerson2"
+    "surname": "2surname",
+    "lastname": "2lastname",
+    "age": "2",
+    "height": "2height",
+    "hairColor": "2hairColor",
+    "eyeColor": "2eyeColor",
+    "job": "2job",
+    "accessoires": "2accessoires",
+    "personality": ["2personality"],
+    "relationship": "2relationship",
+    "nationality": "2nationality",
+    "production": ["2production"],
+    "gender": "2Gender"
+  },
+  {
+    "id": 3,
+    "surname": "3surname",
+    "lastname": "3lastname",
+    "age": "3",
+    "height": "3height",
+    "hairColor": "3hairColor",
+    "eyeColor": "3eyeColor",
+    "job": "3job",
+    "accessoires": "3accessoires",
+    "personality": ["3personality"],
+    "relationship": "3relationship",
+    "nationality": "3nationality",
+    "production": ["3production"],
+    "gender": "3Gender"
+  },
+  {
+    "id": 4,
+    "surname": "4surname",
+    "lastname": "4lastname",
+    "age": "4",
+    "height": "4height",
+    "hairColor": "4hairColor",
+    "eyeColor": "4eyeColor",
+    "job": "4job",
+    "accessoires": "4accessoires",
+    "personality": ["4personality"],
+    "relationship": "4relationship",
+    "nationality": "4nationality",
+    "production": ["4production"],
+    "gender": "4Gender"
   }
 ]
