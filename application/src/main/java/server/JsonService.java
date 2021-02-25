@@ -1,6 +1,5 @@
 package server;
 
-import Dtos.PersonDto;
 import Dtos.UserDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -13,13 +12,13 @@ public class JsonService {
 
     private static final String FILE_NAME = "peoples.json";
 
-    public static List<PersonDto> loadPersonJson() {
+    public static List<UserDto> loadJson() {
         ObjectMapper json = new ObjectMapper();
         ClassLoader classLoader = JsonService.class.getClassLoader();
         InputStream is = classLoader.getResourceAsStream(FILE_NAME);
 
         try {
-            List<PersonDto> dto = Arrays.asList(json.readValue(is, PersonDto[].class));
+            List<UserDto> dto = Arrays.asList(json.readValue(is, UserDto[].class));
             return dto;
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,7 +1,6 @@
 package Dtos;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class UserDto implements Serializable {
     private int id;
@@ -11,9 +10,7 @@ public class UserDto implements Serializable {
         this.id = id;
         this.name = name;
     }
-
     public UserDto(){}
-
 
     public int getId() {
         return id;
@@ -30,7 +27,6 @@ public class UserDto implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
 
     @Override
     public String toString() {
