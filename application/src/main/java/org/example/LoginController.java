@@ -2,9 +2,14 @@ package org.example;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import services.ClientService;
 
@@ -12,30 +17,48 @@ import java.io.IOException;
 
 public class LoginController {
 
+    private String loginTextFieldValue = "";
     @FXML
     Button loginButton;
     @FXML
     TextField loginTextField;
+    @FXML
+    Label formValidationLabel;
+
+    @FXML
+    public void onLoginTextFieldKeyTyped(){
+        loginTextFieldValue = loginTextField.getText().trim();
+        loginButton.setDisable(loginTextFieldValue.length() < 3);
+    }
+
+    @FXML
+    public void onLoginTextFieldKeyPressed(KeyEvent keyEvent){
+        if(keyEvent.getCode() == KeyCode.ENTER){
+            onLoginButtonClicked();
+        }
+    }
 
     @FXML
     public void onLoginButtonClicked(){
-        String textValue = loginTextField.getText().trim();
-        if(textValue.length() >= 3){
+        formValidationLabel.setText("");
+        if(loginTextFieldValue.length() >= 3){
             try {
-                ClientService.getInstance(textValue);
+                ClientService.getInstance(loginTextFieldValue);
                 Stage stage = (Stage) loginTextField.getScene().getWindow();
                 FXMLLoader loader = new FXMLLoader(App.class.getResource("players.fxml"));
                 Scene scene = new Scene(loader.load());
                 stage.setScene(scene);
-                stage.setTitle(textValue);
+                stage.setTitle(loginTextFieldValue);
 
                 PlayersController controller = loader.getController();
-                controller.setUsername(textValue);
+                controller.setUsername(loginTextFieldValue);
 
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }else {
+            formValidationLabel.setText("Mind. 3 Zeichen");
         }
     }
 }
