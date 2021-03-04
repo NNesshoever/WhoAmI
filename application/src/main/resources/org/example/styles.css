@@ -45,11 +45,11 @@
 
 /* danger colors */
 .danger{
-    -fx-background-color: rgb(221, 115, 115);
+    -fx-background-color: rgb(219, 50, 50);
 }
 .danger:pressed {
     -fx-background-color: rgb(214, 79, 79);
 }
 .danger:hover {
-    -fx-background-color: rgb(219, 50, 50);
+    -fx-background-color: rgb(221, 115, 115);
 }
