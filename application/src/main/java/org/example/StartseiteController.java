@@ -1,6 +1,7 @@
 package org.example;
 
 import Dtos.UserDto;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -28,10 +29,7 @@ public class StartseiteController {
     Button LogoutButton;
 
     @FXML
-    TextField usernameTextField;
-    TextField shownMessage;
-    Button accept;
-    Button decline;
+    TextField ShownMessage;
 
     private ClientService _clientService;
 
@@ -104,7 +102,7 @@ public class StartseiteController {
                         if(activeMessage.startsWith("/GameRequest")){
                             displayRequest();
                         }
-                        else if(activeMessage.startsWith("/Accept")){
+                        else if(activeMessage.startsWith("/Accepted")){
                             OpenGameView();
                         }
                     }
@@ -125,7 +123,7 @@ public class StartseiteController {
 
     public void displayRequest(){
         String message = prepareMessage();
-        shownMessage.setText(message);
+        ShownMessage.setText(message);
     }
 
     public String prepareMessage(){
@@ -143,10 +141,10 @@ public class StartseiteController {
         return messageToShow;
     }
 
-    public void AcceptGame() {
+    public void AcceptRequest() {
         String otherPlayerId = splitMessage();
-        String message = "/Accept " + otherPlayerId + " " + _clientService.getClientId();
         try {
+            String message = "/Accept " + otherPlayerId + " " + _clientService.getInstance(username).getClientId();
             _clientService.getInstance(this.username).sendText(message);
             OpenGameView();
         } catch (IOException e) {
@@ -157,26 +155,35 @@ public class StartseiteController {
     public void DeclineRequest(){
 
         String otherPlayerId = splitMessage();
-        String message = "/Decline " + otherPlayerId + " " + _clientService.getClientId();
         try {
+            String message = "/Decline " + otherPlayerId + " " + _clientService.getInstance(username).getClientId();
             _clientService.getInstance(this.username).sendText(message);
+            activeMessage = null;
         } catch (IOException e) {
             //TODO: Open error toast or something like that
         }
     }
 
     public String splitMessage(){
-        String[] messageParts = messageToShow.split("\\\\s+");
-        return messageParts[6].substring(0, messageParts.length - 1);
+        String[] messageParts = messageToShow.split("\\s+");
+        return messageParts[6].substring(0, messageParts[6].length()-1);
     }
 
-    public void OpenGameView() throws IOException {
-        Stage stage = new Stage();
+    public synchronized void OpenGameView() throws IOException {
+        Stage stage = (Stage) ShownMessage.getScene().getWindow();
         FXMLLoader loader = new FXMLLoader(App.class.getResource("game.fxml"));
         Scene scene = new Scene(loader.load());
-        stage.setScene(scene);
+        try {
+            Platform.runLater(() -> {
+                stage.setScene(scene);
+                stage.show();
+            });
 
-        stage.show();
+        }
+        catch(Exception e){
+            System.out.println((e.getMessage()));
+            System.out.println((e.getStackTrace()));
+        }
     }
 
     @FXML

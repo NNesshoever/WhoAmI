@@ -43,8 +43,8 @@ public class ServerThread extends Thread {
                         sendGameRequest(message);
                         System.out.println("send game request");
                     } else if (message.startsWith("/Accept")) {
-                        sendAcceptanceBack(message.split("\\\\s+")[1]);
-                        System.out.println("send game request");
+                        sendAcceptanceBack(message);
+                        System.out.println("send game acceptance");
                     }else {
                         System.out.println("Received message from client" + clientId + ": " + message);
                         ClientManager.addMessage(clientId, message);
@@ -113,7 +113,7 @@ public class ServerThread extends Thread {
     }
 
     private void sendAcceptanceBack(String acceptMessage) throws IOException {
-        String[] messageParts = acceptMessage.split("\\\\s+");
+        String[] messageParts = acceptMessage.split("\\s+");
         int requestPayerId = Integer.parseInt(messageParts[1]);
         String acceptingPlayerId = messageParts[2];
 

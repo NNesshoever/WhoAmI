@@ -40,12 +40,12 @@
             <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
          </padding>
       </Button>
-      <Button fx:id="Accept" mnemonicParsing="false" text="Accept" GridPane.columnIndex="2" GridPane.rowIndex="1">
+      <Button fx:id="Accept" onAction="#AcceptRequest" mnemonicParsing="false" text="Accept" GridPane.columnIndex="2" GridPane.rowIndex="1">
          <GridPane.margin>
             <Insets left="75.0" top="75.0" />
          </GridPane.margin>
       </Button>
-      <Button fx:id="Decline" mnemonicParsing="false" text="Decline" GridPane.columnIndex="2" GridPane.rowIndex="1">
+      <Button fx:id="Decline" onAction="#DeclineRequest" mnemonicParsing="false" text="Decline" GridPane.columnIndex="2" GridPane.rowIndex="1">
          <GridPane.margin>
             <Insets left="150.0" top="75.0" />
          </GridPane.margin>
