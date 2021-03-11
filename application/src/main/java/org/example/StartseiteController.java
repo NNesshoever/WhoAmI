@@ -1,5 +1,6 @@
 package org.example;
 
+import Dtos.PersonDto;
 import Dtos.UserDto;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -45,6 +46,16 @@ public class StartseiteController {
             ArrayList<UserDto> users = client.getClientList();
             usersList.setAll(users);
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadPerson(){
+        try{
+            client = ClientService.getInstance(this.username);
+            PersonDto Person = client.getPerson();
+            System.out.println(Person.getLastname());
+        }catch(IOException e){
             e.printStackTrace();
         }
     }

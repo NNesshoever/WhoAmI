@@ -20,7 +20,7 @@
    </rowConstraints>
    <children>
       <ListView fx:id="PlayersList" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" />
-      <Button fx:id="ButttonRefreshPlayers" minWidth="0.0" onAction="#RefreshPlayers" mnemonicParsing="false" text="Neu Laden" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+      <Button fx:id="ButttonRefreshPlayers" minWidth="0.0" mnemonicParsing="false" onAction="#RefreshPlayers" text="Neu Laden" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
          <GridPane.margin>
             <Insets bottom="5.0" top="5.0" />
          </GridPane.margin>
@@ -31,7 +31,7 @@
             <Font name="Segoe UI" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="ButtonLogout" onAction="#LogoutUser" mnemonicParsing="false" text="Abmelden" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+      <Button fx:id="ButtonLogout" mnemonicParsing="false" onAction="#LogoutUser" text="Abmelden" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
          <GridPane.margin>
             <Insets right="5.0" top="5.0" />
          </GridPane.margin>
@@ -39,5 +39,6 @@
             <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
          </padding>
       </Button>
+      <Button fx:id="ButtonGetPerson" mnemonicParsing="false" onAction="#loadPerson" text="Test" GridPane.columnIndex="2" GridPane.rowIndex="1" />
    </children>
 </GridPane>
