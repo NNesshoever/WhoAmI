@@ -19,7 +19,7 @@
       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <ListView fx:id="PlayersList" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" />
+      <ListView fx:id="PlayersList" onMouseClicked="#SendGameRequest" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" />
       <Button fx:id="ButttonRefreshPlayers" minWidth="0.0" onAction="#RefreshPlayers" mnemonicParsing="false" text="Neu Laden" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
          <GridPane.margin>
             <Insets bottom="5.0" top="5.0" />

@@ -3,6 +3,7 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Server {
 
@@ -10,7 +11,7 @@ public class Server {
     private static final int PORT = 9995;
 
     private ServerSocket server;
-
+    ServerThreadsManager serverThreadsManager = ServerThreadsManager.getInstance();
     private Server() throws IOException {
         server = new ServerSocket(PORT);
     }
@@ -36,7 +37,9 @@ public class Server {
         while(true){
             System.out.println("Awaiting connection...");
             Socket socket = server.accept();
-            new ServerThread(socket).start();
+            ServerThread newThread = new ServerThread(socket);
+            serverThreadsManager.serverThreads.add(newThread);
+            newThread.start();
         }
 
     }

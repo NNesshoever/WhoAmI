@@ -6,14 +6,15 @@ import java.net.Socket;
 public class ServerThread extends Thread {
     private Socket socket;
     private int clientId = -1;
+    ServerThreadsManager serverThreadsManager = ServerThreadsManager.getInstance();
+    DataOutputStream writer;
 
-    public ServerThread(Socket clientSocket) {
+    public ServerThread(Socket clientSocket) throws IOException {
         this.socket = clientSocket;
     }
 
     public void run() {
         DataInputStream reader;
-        DataOutputStream writer;
         try {
             reader = new DataInputStream(socket.getInputStream());
             writer = new DataOutputStream(socket.getOutputStream());
@@ -38,7 +39,13 @@ public class ServerThread extends Thread {
                     } else if (message.startsWith("/getClientList")) {
                         sendClientList(new ObjectOutputStream(socket.getOutputStream()));
                         System.out.println("Liste gesendet");
-                    } else {
+                    } else if (message.startsWith("/GameRequest")) {
+                        sendGameRequest(message);
+                        System.out.println("send game request");
+                    } else if (message.startsWith("/Accept")) {
+                        sendAcceptanceBack(message.split("\\\\s+")[1]);
+                        System.out.println("send game request");
+                    }else {
                         System.out.println("Received message from client" + clientId + ": " + message);
                         ClientManager.addMessage(clientId, message);
                     }
@@ -89,4 +96,42 @@ public class ServerThread extends Thread {
             e.printStackTrace();
         }
     }
+
+    private void sendGameRequest(String requestMessage) throws IOException {
+        int firstWhiteSpace = requestMessage.indexOf(" ");
+        int secondWhiteSpace = requestMessage.lastIndexOf(" ");
+
+        int askedPlayerId = Integer.parseInt(requestMessage.substring(firstWhiteSpace, secondWhiteSpace).trim());
+        int requestingPlayerId = Integer.parseInt(requestMessage.substring(secondWhiteSpace).trim());
+
+        ServerThread askedPlayerThread = ServerThreadsManager.getInstance().getThreadByClientID(askedPlayerId);
+        DataOutputStream otherWriter = askedPlayerThread.getWriter();
+        String message = "/GameRequest " + requestingPlayerId;
+
+        otherWriter.writeUTF(message);
+        otherWriter.flush();
+    }
+
+    private void sendAcceptanceBack(String acceptMessage) throws IOException {
+        String[] messageParts = acceptMessage.split("\\\\s+");
+        int requestPayerId = Integer.parseInt(messageParts[1]);
+        String acceptingPlayerId = messageParts[2];
+
+        ServerThread askedPlayerThread = ServerThreadsManager.getInstance().getThreadByClientID(requestPayerId);
+        DataOutputStream otherWriter = askedPlayerThread.getWriter();
+        String message = "/Accepted " + acceptingPlayerId;
+
+        otherWriter.writeUTF(message);
+        otherWriter.flush();
+    }
+
+    public int getClientId(){
+        return  this.clientId;
+    }
+
+    public Socket getSocket(){
+        return this.socket;
+    }
+
+    public DataOutputStream getWriter() {return this.writer;}
 }
