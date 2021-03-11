@@ -1,7 +1,11 @@
 package server;
 
+import Dtos.PersonDto;
+
 import java.io.*;
 import java.net.Socket;
+import java.util.List;
+import java.util.Random;
 
 public class ServerThread extends Thread {
     private Socket socket;
@@ -39,6 +43,9 @@ public class ServerThread extends Thread {
                     } else if (message.startsWith("/getClientList")) {
                         sendClientList(new ObjectOutputStream(socket.getOutputStream()));
                         System.out.println("Liste gesendet");
+                    }else if(message.startsWith("/GetPerson")){
+                        PersonDto person  = getRandomPerson();
+                        sendPerson(new ObjectOutputStream(socket.getOutputStream()), person);
                     } else {
                         System.out.println("Received message from client" + clientId + ": " + message);
                         ClientManager.addMessage(clientId, message);
@@ -78,6 +85,30 @@ public class ServerThread extends Thread {
         writer.flush();
     }
 
+
+    private PersonDto getRandomPerson(){
+        List<PersonDto> Persons = JsonService.loadPersonJson();
+        Random rnd = new Random();
+        int max = Persons.size();
+        long seed = System.nanoTime();
+        seed ^= (seed << rnd.nextInt());
+        seed ^= (seed >> rnd.nextInt());
+        String SeedString = String.valueOf(seed);
+        int i = 0;
+        int temp = 0;
+        do{
+            temp = Character.digit(SeedString.charAt(i), 10);
+            System.out.println("Temp: " + temp);
+            System.out.println("i: " + i);
+            System.out.println("\n");
+            ++i;
+
+        }while(temp > max-1 && temp > 0 && i <= SeedString.length());
+        PersonDto returnPerson = new PersonDto();
+        returnPerson = Persons.get(temp);
+        return returnPerson;
+    }
+
     private String getNameFromInit(String init) {
         return init.split(",")[1];
     }
@@ -87,6 +118,15 @@ public class ServerThread extends Thread {
             writer.writeObject(ClientManager.getClients());
             writer.flush();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendPerson(ObjectOutputStream writer, PersonDto person){
+        try{
+            writer.writeObject(person);
+            writer.flush();
+        }catch(IOException e){
             e.printStackTrace();
         }
     }

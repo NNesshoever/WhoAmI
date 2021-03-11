@@ -1,8 +1,9 @@
 package Dtos;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PersonDto {
+public class PersonDto implements Serializable {
     private int id;
     private String surname;
     private String lastname;
