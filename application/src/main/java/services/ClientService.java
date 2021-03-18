@@ -18,6 +18,7 @@ public class ClientService {
     private DataInputStream dis;
     private ObjectInputStream disObject;
     private static String latestMessage;
+    private static String latestTextMessage;
     private boolean ContinueRead = true;
     private boolean ReadIsRunning;
     private static ClientService instance;
@@ -49,10 +50,23 @@ public class ClientService {
         return single_instance;
     }
 
+    public static String getLatestTextMessage() {
+        String text = latestTextMessage;
+        latestTextMessage = "";
+        return text;
+    }
+
+    public static void setLatestTextMessage(String latestTextMessage) {
+        ClientService.latestTextMessage = latestTextMessage;
+    }
+
     public static String getLatestMessage(){
         return latestMessage;
     }
 
+    public static void setLatestMessage(String latestMessage) {
+        ClientService.latestMessage = latestMessage;
+    }
 
     /**
      * Sends a text message to the server and outputs the response message.
@@ -69,12 +83,17 @@ public class ClientService {
 
     public void read() {
         Thread t = new Thread(() -> {
-            if(ReadIsRunning == false) {
-                while (ContinueRead == true) {
+            if(!ReadIsRunning) {
+                while (ContinueRead) {
                     ReadIsRunning = true;
                     try {
                         if (dis.available() > 0) {
                             latestMessage = dis.readUTF();
+                            if(latestMessage.startsWith("/recMessage")){
+                                int messageKey = latestMessage.split(" ")[0].length()+1;
+                                latestTextMessage = latestMessage.substring(messageKey);
+                                System.out.println(latestTextMessage);
+                            }
                         }
                     } catch (IOException ignored) {
 
