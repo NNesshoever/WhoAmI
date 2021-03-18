@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Popup;
@@ -83,14 +84,15 @@ public class StartseiteController {
         loadClientList();
     }
 
-    public void SendGameRequest() throws IOException {
-        int selcetedID = PlayersList.getSelectionModel().getSelectedItem().getId();
-        int clientID = ClientService.getInstance(this.username).getClientId();
-        String message = "/GameRequest " + PlayersList.getSelectionModel().getSelectedItem().getId() + " " + _clientService.getInstance(this.username).getClientId();
-        try {
-            _clientService.getInstance(this.username).sendText(message);
-        } catch (IOException e) {
-            //TODO: Open error toast or something like that
+    public void SendGameRequest(MouseEvent mouseEvent) throws IOException {
+        if(mouseEvent.getClickCount() == 2 && PlayersList.getSelectionModel().getSelectedItem() != null){
+            String message = "/GameRequest " + PlayersList.getSelectionModel().getSelectedItem().getId() + " " + _clientService.getInstance(this.username).getClientId();
+            try {
+                _clientService.getInstance(this.username).sendText(message);
+            } catch (IOException e) {
+                //TODO: Open error toast or something like that
+                System.out.println(e.getMessage());
+            }
         }
     }
 
