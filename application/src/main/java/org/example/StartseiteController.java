@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 import javafx.scene.control.TextField;
 
-public class PlayersController {
+public class StartseiteController {
     ObservableList<UserDto> usersList;
     Button LogoutButton;
 
