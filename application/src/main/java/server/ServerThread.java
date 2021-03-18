@@ -94,7 +94,7 @@ public class ServerThread extends Thread {
 
 
     private PersonDto getRandomPerson(){
-        List<PersonDto> Persons = JsonService.loadPersonJson();
+        List<PersonDto> Persons = JsonService.loadJson();
         Random rnd = new Random();
         int max = Persons.size();
         long seed = System.nanoTime();

@@ -91,13 +91,6 @@ public class ClientService {
         t.start();
     }
 
-    public static ClientService getInstance(String username) throws IOException {
-        if (single_instance == null) {
-            single_instance = new ClientService(username);
-        }
-        return single_instance;
-    }
-
     public static void setInstance(){
         single_instance = null;
     }

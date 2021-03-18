@@ -10,13 +10,13 @@ public class loadPersonTests {
 
     @Test
     public void readJson(){
-        List<PersonDto> person = JsonService.loadPersonJson();
+        List<PersonDto> person = JsonService.loadJson();
         Assert.assertTrue(person.size()>1);
     }
 
     @Test
     public void getPersonsInfo(){
-        List<PersonDto> person = JsonService.loadPersonJson();
+        List<PersonDto> person = JsonService.loadJson();
         Assert.assertTrue(person.get(0).getId()==1);
     }
 
