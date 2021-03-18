@@ -71,6 +71,7 @@ public class StartseiteController {
         try {
             client = ClientService.getInstance(this.username);
             ArrayList<UserDto> users = client.getClientList();
+            users.removeIf((clientDto)-> clientDto.getId() == client.getClientId());
             usersList.setAll(users);
         } catch (IOException e) {
             e.printStackTrace();
