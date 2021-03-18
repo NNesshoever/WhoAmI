@@ -2,14 +2,14 @@ package server;
 
 
 import Dtos.UserDto;
+import services.ClientService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class ClientManager {
     private static List<Client> clients = new ArrayList<>();
     private static int lastId = 0;
+    private Iterator<Client> i;
 
     public static synchronized ArrayList<UserDto> getClients(){
     ArrayList<UserDto> clientDtos = new ArrayList<>();
@@ -56,11 +56,10 @@ public class ClientManager {
         return null;
     }
 
-    public static synchronized void deleteClient(int clientID){
-        for(Client c : clients){
-            if(c.getId() == clientID){
-                clients.remove(c);
-            }
+    public static synchronized void deleteClient(int clientID) {
+        Client delete = ClientManager.getClient(clientID);
+        if (delete != null) {
+            clients.remove(delete);
         }
     }
 

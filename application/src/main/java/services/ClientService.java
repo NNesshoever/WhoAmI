@@ -17,7 +17,9 @@ public class ClientService {
     private DataOutputStream dos;
     private DataInputStream dis;
     private ObjectInputStream disObject;
-
+    private static String latestMessage;
+    private boolean ContinueRead = true;
+    private boolean ReadIsRunning;
     private static ClientService instance;
     private static ClientService single_instance = null;
 
@@ -29,6 +31,26 @@ public class ClientService {
         dis = new DataInputStream(socket.getInputStream());
         String id = dis.readUTF();
         clientId = Integer.parseInt(id);
+        single_instance = this;
+    }
+
+    /**
+     * Singleton Pattern
+     *
+     * @param username
+     * @return
+     * @throws IOException
+     */
+    public static ClientService getInstance(String username) throws IOException {
+        if (single_instance == null) {
+            single_instance = new ClientService(username);
+            single_instance.read();
+        }
+        return single_instance;
+    }
+
+    public static String getLatestMessage(){
+        return latestMessage;
     }
 
 
@@ -47,21 +69,24 @@ public class ClientService {
 
     public void read() {
         Thread t = new Thread(() -> {
-            while (true) {
-                try {
-                    if (dis.available() > 0) {
-                        System.out.println(dis.readUTF());
+            if(ReadIsRunning == false) {
+                while (ContinueRead == true) {
+                    ReadIsRunning = true;
+                    try {
+                        if (dis.available() > 0) {
+                            latestMessage = dis.readUTF();
+                        }
+                    } catch (IOException ignored) {
+
                     }
-                } catch (IOException ignored) {
+                    try {
+                        Thread.sleep(5);
+                    } catch (InterruptedException ignored) {
 
-                }
-                try {
-                    Thread.sleep(5);
-                } catch (InterruptedException ignored) {
-
+                    }
                 }
             }
-
+            ReadIsRunning = false;
         });
         t.start();
     }
@@ -80,11 +105,13 @@ public class ClientService {
     public ArrayList<UserDto> getClientList(){
         ArrayList<UserDto> userDtos = null;
         try {
+            ContinueRead = false;
             dos.writeUTF("/getClientList");
             dos.flush();
             disObject = new ObjectInputStream(socket.getInputStream());
-            //TODO: make Serializable
             userDtos = (ArrayList<UserDto>) disObject.readObject();
+            ContinueRead = true;
+            read();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -107,4 +134,5 @@ public class ClientService {
     public int getClientId(){
         return this.clientId;
     }
+
 }
