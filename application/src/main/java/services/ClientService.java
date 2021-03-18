@@ -1,6 +1,7 @@
 package services;
 
 
+import Dtos.PersonDto;
 import Dtos.UserDto;
 
 import java.io.*;
@@ -115,6 +116,19 @@ public class ClientService {
             e.printStackTrace();
         }
         return userDtos;
+    }
+
+    public PersonDto getPerson(){
+        PersonDto Person = null;
+        try{
+            dos.writeUTF("/GetPerson");
+            dos.flush();
+            disObject = new ObjectInputStream(socket.getInputStream());
+            Person = (PersonDto) disObject.readObject();
+        }catch(IOException | ClassNotFoundException e){
+            e.printStackTrace();
+        }
+        return Person;
     }
 
     public int getClientId(){
