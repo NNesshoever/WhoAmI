@@ -29,7 +29,7 @@ public class LoginController {
                 stage.setScene(scene);
                 stage.setTitle(textValue);
 
-                PlayersController controller = loader.getController();
+                StartseiteController controller = loader.getController();
                 controller.setUsername(textValue);
 
                 stage.show();
