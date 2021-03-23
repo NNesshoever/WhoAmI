@@ -26,7 +26,6 @@ public class LoginController {
     @FXML
     public void onLoginTextFieldKeyTyped() {
         loginTextFieldValue = loginTextField.getText().trim();
-        loginButton.setDisable(loginTextFieldValue.length() < 3);
     }
 
     @FXML

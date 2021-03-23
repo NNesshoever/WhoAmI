@@ -23,7 +23,10 @@
       <RowConstraints maxHeight="157.0" minHeight="10.0" prefHeight="88.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <ListView fx:id="PlayersList" onMouseClicked="#SendGameRequest" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+      <ListView fx:id="PlayersList" onMouseClicked="#SendGameRequest" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets top="5.0" />
+         </GridPane.margin></ListView>
       <Button fx:id="ButttonRefreshPlayers" minWidth="0.0" mnemonicParsing="false" onAction="#RefreshPlayers" styleClass="secondary" text="Neu Laden" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2">
          <GridPane.margin>
             <Insets bottom="5.0" top="5.0" />

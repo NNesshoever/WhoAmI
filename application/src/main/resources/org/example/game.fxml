@@ -83,14 +83,14 @@
          <GridPane.margin>
             <Insets />
          </GridPane.margin></ListView>
-      <SplitPane dividerPositions="0.5" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="TOP">
+      <SplitPane dividerPositions="0.5" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
          <items>
             <TextField fx:id="textfieldMessage" styleClass="input-text">
                <font>
                   <Font name="Segoe UI" size="18.0" />
                </font>
             </TextField>
-            <Button fx:id="buttonSend" minWidth="70.0" mnemonicParsing="false" onAction="#OnButtonSendClicked" prefHeight="38.0" prefWidth="105.0" styleClass="primary" text="Senden">
+            <Button fx:id="buttonSend" minWidth="70.0" mnemonicParsing="false" onAction="#OnButtonSendClicked" prefHeight="35.0" prefWidth="105.0" styleClass="primary" text="Senden">
                <font>
                   <Font name="Segoe UI" size="14.0" />
                </font>
