@@ -4,8 +4,6 @@ import Dtos.UserDto;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -16,9 +14,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-import server.ClientManager;
-import server.ServerThread;
 import services.ClientService;
 
 import java.io.IOException;
@@ -36,6 +31,7 @@ public class StartseiteController {
     private ClientService _clientService;
 
     private String username = "";
+    private int opponentId;
     ClientService client;
     private String activeMessage;
     private String messageToShow;
@@ -84,15 +80,15 @@ public class StartseiteController {
         loadClientList();
     }
 
-    public void SendGameRequest(MouseEvent mouseEvent) throws IOException {
-        if(mouseEvent.getClickCount() == 2 && PlayersList.getSelectionModel().getSelectedItem() != null){
-            String message = "/GameRequest " + PlayersList.getSelectionModel().getSelectedItem().getId() + " " + _clientService.getInstance(this.username).getClientId();
-            try {
-                _clientService.getInstance(this.username).sendText(message);
-            } catch (IOException e) {
-                //TODO: Open error toast or something like that
-                System.out.println(e.getMessage());
-            }
+    public void SendGameRequest() throws IOException {
+        int selcetedID = PlayersList.getSelectionModel().getSelectedItem().getId();
+        int clientID = ClientService.getInstance(this.username).getClientId();
+        String message = "/GameRequest " + PlayersList.getSelectionModel().getSelectedItem().getId() + " " + _clientService.getInstance(this.username).getClientId();
+        opponentId = PlayersList.getSelectionModel().getSelectedItem().getId();
+        try {
+            _clientService.getInstance(this.username).sendText(message);
+        } catch (IOException e) {
+            //TODO: Open error toast or something like that
         }
     }
 
@@ -104,13 +100,14 @@ public class StartseiteController {
                         activeMessage = _clientService.getInstance(this.username).getLatestMessage();
 
                         if(activeMessage.startsWith("/GameRequest")){
+                            opponentId = Integer.parseInt(activeMessage.split(" ")[1]);
                             displayRequest();
                         }
                         else if(activeMessage.startsWith("/Accepted")){
+                            opponentId = Integer.parseInt(activeMessage.split(" ")[1]);
                             OpenGameView();
                         }
                     }
-
 
                 } catch (Exception e) {
                 }
@@ -180,6 +177,9 @@ public class StartseiteController {
         try {
             Platform.runLater(() -> {
                 stage.setScene(scene);
+                GameController controller = loader.getController();
+                controller.setUsername(username);
+                controller.setOpponentId(opponentId);
                 stage.show();
             });
 

@@ -29,7 +29,7 @@ public class ServerThread extends Thread {
         while (true) {
             try {
                 if (clientId > 0) {
-                    handleMessages(writer);
+                   // handleMessages(writer);
                 }
                 if (reader.available() > 0) {
                     String message = reader.readUTF();
@@ -53,12 +53,14 @@ public class ServerThread extends Thread {
                     } else if (message.startsWith("/Accept")) {
                         sendAcceptanceBack(message);
                         System.out.println("send game acceptance");
-                    }else {
+                    } else if (message.startsWith("/SendTextMessage")) {
+                        sendMessage(message);
+                        System.out.println("Send Text Message");
+                    } else {
                         System.out.println("Received message from client" + clientId + ": " + message);
                         ClientManager.addMessage(clientId, message);
                     }
                 }
-
 
             } catch (EOFException ignored) {
 
@@ -80,6 +82,19 @@ public class ServerThread extends Thread {
             writer.writeUTF(message);
             writer.flush();
         }
+    }
+
+    private void sendMessage(String textmessage) throws IOException {
+        String text = textmessage.split(",")[1];
+        int recUserId = Integer.parseInt(textmessage.split(",")[2]);
+
+        ServerThread recUserThread = ServerThreadsManager.getInstance().getThreadByClientID(recUserId);
+        DataOutputStream otherWriter = recUserThread.getWriter();
+        String message = "/recMessage " + text;
+
+        otherWriter.writeUTF(message);
+        otherWriter.flush();
+
     }
 
     private void handleInitConnection(DataOutputStream writer, String initMessage) throws IOException {

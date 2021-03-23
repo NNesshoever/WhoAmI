@@ -1,5 +1,6 @@
 package org.example;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -9,12 +10,19 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import services.ClientService;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
 
 public class GameController {
+    private ClientService _clientService;
+    private String username = "";
+    private final String OPPONENT = "Mitspieler";
+    private int opponentId;
+    private final String CHAT_USERNAME = "Du";
 
     ObservableList<String> listMessages;
 
@@ -48,16 +56,15 @@ public class GameController {
                 sendMessage();
             }
         });
+        setActiveMessage();
     }
 
     @FXML
     public void onButtonGuessedClicked() {
-
     }
 
     @FXML
     public void onButtonSurrenderClicked(){
-
     }
 
     @FXML
@@ -68,10 +75,52 @@ public class GameController {
     private void sendMessage() {
         String text = textfieldMessage.getText().trim();
         if (text.length() > 0) {
-            addItem(listviewMessages, text);
+            addItem(listviewMessages,CHAT_USERNAME+ ": " + text);
             textfieldMessage.clear();
+            sendMessageToServer(text);
         }
     }
+
+    public void sendMessageToServer(String userMessage) {
+        try {
+            String message = "/SendTextMessage," + userMessage+ ","+ opponentId;
+            _clientService.getInstance(this.username).sendText(message);
+        } catch (IOException e) {
+            //TODO: Open error toast or something like that
+        }
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setOpponentId(int opponentId) {
+        this.opponentId = opponentId;
+    }
+
+
+    public void setActiveMessage(){
+        Thread t = new Thread(() -> {
+            while (true) {
+                try {
+                    String textMessage = _clientService.getInstance(this.username).getLatestTextMessage();
+                    if(textMessage.length()>0){
+                        Platform.runLater(()-> { addItem(listviewMessages, OPPONENT +": " + textMessage); });
+                    }
+                    } catch (Exception e) {
+                }
+                try {
+                    Thread.sleep(10);
+
+                } catch (InterruptedException ignored) {
+
+                }
+            }
+
+        });
+        t.start();
+    }
+
 
     public static <T> void addItem(ListView<T> listView, T item) {
         List<T> messages = listView.getItems();
