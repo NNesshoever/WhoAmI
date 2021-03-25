@@ -9,13 +9,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import services.ClientService;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
-import javafx.scene.control.TextField;
 
 public class StartseiteController {
     ObservableList<UserDto> usersList;
@@ -23,19 +23,14 @@ public class StartseiteController {
 
     @FXML
     TextField ShownMessage;
-
-    private ClientService _clientService;
-
-    private String username = "";
-    private int opponentId;
     ClientService client;
-    private String activeMessage;
-    private String messageToShow;
-
     @FXML
     ListView<UserDto> PlayersList;
-
-
+    private ClientService _clientService;
+    private String username = "";
+    private int opponentId;
+    private String activeMessage;
+    private String messageToShow;
 
 
     public StartseiteController() {
@@ -49,7 +44,7 @@ public class StartseiteController {
     }
 
     @FXML
-    public void initialize(){
+    public void initialize() {
         usersList = FXCollections.observableArrayList();
         PlayersList.setItems(usersList);
         loadClientList();
@@ -64,6 +59,7 @@ public class StartseiteController {
         try {
             client = ClientService.getInstance(this.username);
             ArrayList<UserDto> users = client.getClientList();
+            users.removeIf((clientDto) -> clientDto.getId() == client.getClientId());
             usersList.setAll(users);
         } catch (IOException e) {
             e.printStackTrace();
@@ -75,30 +71,29 @@ public class StartseiteController {
         loadClientList();
     }
 
-    public void SendGameRequest() throws IOException {
-        int selcetedID = PlayersList.getSelectionModel().getSelectedItem().getId();
-        int clientID = ClientService.getInstance(this.username).getClientId();
-        String message = "/GameRequest " + PlayersList.getSelectionModel().getSelectedItem().getId() + " " + _clientService.getInstance(this.username).getClientId();
-        opponentId = PlayersList.getSelectionModel().getSelectedItem().getId();
-        try {
-            _clientService.getInstance(this.username).sendText(message);
-        } catch (IOException e) {
-            //TODO: Open error toast or something like that
+    public void SendGameRequest(MouseEvent mouseEvent) throws IOException {
+        if (mouseEvent.getClickCount() == 2 && PlayersList.getSelectionModel().getSelectedItem() != null) {
+            String message = "/GameRequest " + PlayersList.getSelectionModel().getSelectedItem().getId() + " " + _clientService.getInstance(this.username).getClientId();
+            opponentId = PlayersList.getSelectionModel().getSelectedItem().getId();
+            try {
+                _clientService.getInstance(this.username).sendText(message);
+            } catch (IOException e) {
+                //TODO: Open error toast or something like that
+            }
         }
     }
 
-    public void setActiveMessage(){
+    public void setActiveMessage() {
         Thread t = new Thread(() -> {
             while (true) {
                 try {
-                    if(activeMessage == null){
+                    if (activeMessage == null) {
                         activeMessage = _clientService.getInstance(this.username).getLatestMessage();
 
-                        if(activeMessage.startsWith("/GameRequest")){
+                        if (activeMessage.startsWith("/GameRequest")) {
                             opponentId = Integer.parseInt(activeMessage.split(" ")[1]);
                             displayRequest();
-                        }
-                        else if(activeMessage.startsWith("/Accepted")){
+                        } else if (activeMessage.startsWith("/Accepted")) {
                             opponentId = Integer.parseInt(activeMessage.split(" ")[1]);
                             OpenGameView();
                         }
@@ -117,16 +112,16 @@ public class StartseiteController {
         t.start();
     }
 
-    public void displayRequest(){
+    public void displayRequest() {
         String message = prepareMessage();
         ShownMessage.setText(message);
     }
 
-    public String prepareMessage(){
+    public String prepareMessage() {
         String actualMessage = activeMessage.substring(0, activeMessage.lastIndexOf(" "));
         String playerId = activeMessage.substring(activeMessage.lastIndexOf(" "));
 
-        switch (actualMessage){
+        switch (actualMessage) {
             case "/GameRequest":
                 messageToShow = "You got a game request from " + playerId + ". Do you accept?";
                 break;
@@ -148,7 +143,7 @@ public class StartseiteController {
         }
     }
 
-    public void DeclineRequest(){
+    public void DeclineRequest() {
 
         String otherPlayerId = splitMessage();
         try {
@@ -160,9 +155,9 @@ public class StartseiteController {
         }
     }
 
-    public String splitMessage(){
+    public String splitMessage() {
         String[] messageParts = messageToShow.split("\\s+");
-        return messageParts[6].substring(0, messageParts[6].length()-1);
+        return messageParts[6].substring(0, messageParts[6].length() - 1);
     }
 
     public synchronized void OpenGameView() throws IOException {
@@ -178,8 +173,7 @@ public class StartseiteController {
                 stage.show();
             });
 
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println((e.getMessage()));
             System.out.println((e.getStackTrace()));
         }

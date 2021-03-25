@@ -6,22 +6,28 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane minHeight="500.0" minWidth="800.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.StartseiteController">
+<GridPane alignment="CENTER" minHeight="550.0" minWidth="800.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.StartseiteController">
    <columnConstraints>
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="278.0" minWidth="10.0" prefWidth="130.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="467.0" minWidth="10.0" prefWidth="450.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="343.0" minWidth="10.0" prefWidth="130.0" />
    </columnConstraints>
    <rowConstraints>
-      <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints />
+      <RowConstraints maxHeight="457.0" minHeight="10.0" prefHeight="412.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="157.0" minHeight="10.0" prefHeight="88.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <ListView fx:id="PlayersList" onMouseClicked="#SendGameRequest" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" />
-      <Button fx:id="ButttonRefreshPlayers" minWidth="0.0" onAction="#RefreshPlayers" mnemonicParsing="false" text="Neu Laden" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+      <ListView fx:id="PlayersList" onMouseClicked="#SendGameRequest" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets top="5.0" />
+         </GridPane.margin></ListView>
+      <Button fx:id="ButttonRefreshPlayers" minWidth="0.0" mnemonicParsing="false" onAction="#RefreshPlayers" styleClass="secondary" text="Neu Laden" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2">
          <GridPane.margin>
             <Insets bottom="5.0" top="5.0" />
          </GridPane.margin>
@@ -32,28 +38,48 @@
             <Font name="Segoe UI" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="ButtonLogout" mnemonicParsing="false" onAction="#LogoutUser" text="Abmelden" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+      <Button fx:id="ButtonLogout" mnemonicParsing="false" onAction="#LogoutUser" styleClass="warning" text="Abmelden" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="TOP">
          <GridPane.margin>
-            <Insets right="5.0" top="5.0" />
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </GridPane.margin>
          <padding>
             <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
          </padding>
       </Button>
-      <Button fx:id="Accept" onAction="#AcceptRequest" mnemonicParsing="false" text="Accept" GridPane.columnIndex="2" GridPane.rowIndex="1">
-         <GridPane.margin>
-            <Insets left="75.0" top="75.0" />
-         </GridPane.margin>
-      </Button>
-      <Button fx:id="Decline" onAction="#DeclineRequest" mnemonicParsing="false" text="Decline" GridPane.columnIndex="2" GridPane.rowIndex="1">
-         <GridPane.margin>
-            <Insets left="150.0" top="75.0" />
-         </GridPane.margin>
-      </Button>
-      <TextField fx:id="ShownMessage" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="1">
-         <GridPane.margin>
-            <Insets left="10.0" right="10.0" top="-20.0" />
-         </GridPane.margin>
-      </TextField>
+      <VBox fx:id="vBoxGameRequestHolder" alignment="CENTER" prefHeight="13.0" prefWidth="467.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+         <children>
+            <TextField fx:id="ShownMessage" editable="false">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </TextField>
+            <HBox alignment="CENTER" prefHeight="8.0" prefWidth="457.0">
+               <children>
+                  <Button fx:id="Accept" defaultButton="true" mnemonicParsing="false" onAction="#AcceptRequest" styleClass="primary" text="Akzeptieren">
+                     <padding>
+                        <Insets right="5.0" />
+                     </padding>
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="Decline" cancelButton="true" mnemonicParsing="false" onAction="#DeclineRequest" styleClass="danger" text="Ablehnen">
+                     <padding>
+                        <Insets left="5.0" />
+                     </padding>
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </VBox>
    </children>
 </GridPane>
