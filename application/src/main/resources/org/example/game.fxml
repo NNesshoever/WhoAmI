@@ -8,6 +8,7 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -16,11 +17,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane alignment="CENTER" hgap="10.0" minHeight="600.0" minWidth="750.0" prefHeight="600.0" prefWidth="750.0" stylesheets="@styles.css" vgap="10.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.GameController">
+<GridPane alignment="CENTER" hgap="10.0" minHeight="600.0" minWidth="750.0" prefHeight="635.0" prefWidth="974.0" stylesheets="@styles.css" vgap="10.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.GameController">
    <columnConstraints>
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="179.0" minWidth="9.0" prefWidth="9.0" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="688.0" minWidth="10.0" prefWidth="688.0" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="259.0" minWidth="10.0" prefWidth="20.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="179.0" minWidth="0.0" prefWidth="0.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1136.0" minWidth="10.0" prefWidth="1136.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="259.0" minWidth="0.0" prefWidth="0.0" />
    </columnConstraints>
    <rowConstraints>
       <RowConstraints maxHeight="400.0" minHeight="0.0" prefHeight="279.0" vgrow="SOMETIMES" />
@@ -62,10 +63,13 @@
                   <Insets />
                </opaqueInsets>
             </HBox>
-            <Label fx:id="labelDetails" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="87.0" prefWidth="686.0" styleClass="text" text="Name: TestPerson1, Beruf, Kinder Geschlecht, Land, asdb aihsbdhiasb idbasidbuas bdoubasoud boiasbdoab siodbioasndoasbiod basiodbioasbdpioabsoidbaoisb doasbdiobasoidbaoisbdoiabiodbaisbdpiasbdpiasbdpi baspidbpiasbdpi ab" wrapText="true">
+            <Label fx:id="labelDetails" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="92.0" prefWidth="1136.0" styleClass="text" text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua." wrapText="true">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
+               <tooltip>
+                  <Tooltip text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua." wrapText="true" />
+               </tooltip>
             </Label>
          </children>
       </VBox>
