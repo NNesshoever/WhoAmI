@@ -120,9 +120,6 @@ public class ServerThread extends Thread {
         int temp = 0;
         do{
             temp = Character.digit(SeedString.charAt(i), 10);
-            System.out.println("Temp: " + temp);
-            System.out.println("i: " + i);
-            System.out.println("\n");
             ++i;
 
         }while(temp > max-1 && temp > 0 && i <= SeedString.length());

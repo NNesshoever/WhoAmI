@@ -89,7 +89,7 @@ public class ClientService {
                     try {
                         if (dis.available() > 0) {
                             latestMessage = dis.readUTF();
-                            if(latestMessage.startsWith("/recMessage")){
+                            if(latestMessage.startsWith("/Accept") || latestMessage.startsWith("/recMessage")){
                                 int messageKey = latestMessage.split(" ")[0].length()+1;
                                 latestTextMessage = latestMessage.substring(messageKey);
                                 System.out.println(latestTextMessage);
@@ -133,10 +133,13 @@ public class ClientService {
     public PersonDto getPerson(){
         PersonDto Person = null;
         try{
+            ContinueRead = false;
             dos.writeUTF("/GetPerson");
             dos.flush();
             disObject = new ObjectInputStream(socket.getInputStream());
             Person = (PersonDto) disObject.readObject();
+            ContinueRead = true;
+            read();
         }catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
         }

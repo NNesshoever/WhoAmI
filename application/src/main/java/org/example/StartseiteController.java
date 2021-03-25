@@ -1,5 +1,6 @@
 package org.example;
 
+import Dtos.PersonDto;
 import Dtos.UserDto;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -93,7 +94,7 @@ public class StartseiteController {
                         if (activeMessage.startsWith("/GameRequest")) {
                             opponentId = Integer.parseInt(activeMessage.split(" ")[1]);
                             displayRequest();
-                        } else if (activeMessage.startsWith("/Accepted")) {
+                        } else if (activeMessage.startsWith("/Accept")) {
                             opponentId = Integer.parseInt(activeMessage.split(" ")[1]);
                             OpenGameView();
                         }
@@ -163,20 +164,25 @@ public class StartseiteController {
     public synchronized void OpenGameView() throws IOException {
         Stage stage = (Stage) ShownMessage.getScene().getWindow();
         FXMLLoader loader = new FXMLLoader(App.class.getResource("game.fxml"));
-        Scene scene = new Scene(loader.load());
         try {
             Platform.runLater(() -> {
+                Scene scene = null;
+                try {
+                    scene = new Scene(loader.load());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 stage.setScene(scene);
                 GameController controller = loader.getController();
                 controller.setUsername(username);
                 controller.setOpponentId(opponentId);
                 stage.show();
             });
-
         } catch (Exception e) {
             System.out.println((e.getMessage()));
             System.out.println((e.getStackTrace()));
         }
+
     }
 
     @FXML

@@ -150,5 +150,23 @@ public class PersonDto implements Serializable {
     public void setGender(String gender) {
         this.gender = gender;
     }
+
+    @Override
+    public String toString() {
+        return
+                "Surname='" + surname +
+                ", Lastname='" + lastname +
+                ", Age=" + age +
+                ", Height='" + height +
+                ", HairColor='" + hairColor +
+                ", Eye Color='" + eyeColor +
+                ", Job='" + job +
+                ", Accessories='" + accessoires +
+                ", Personality=" + personality +
+                ", Relationship='" + relationship +
+                ", Nationality='" + nationality +
+                ", Production=" + production +
+                ", Gender='" + gender;
+    }
 }
 
