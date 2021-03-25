@@ -89,7 +89,7 @@ public class ClientService {
                     try {
                         if (dis.available() > 0) {
                             latestMessage = dis.readUTF();
-                            if(latestMessage.startsWith("/Accept") || latestMessage.startsWith("/recMessage")){
+                            if(latestMessage.startsWith("/recMessage")){
                                 int messageKey = latestMessage.split(" ")[0].length()+1;
                                 latestTextMessage = latestMessage.substring(messageKey);
                                 System.out.println(latestTextMessage);

@@ -1,6 +1,5 @@
 package org.example;
 
-import Dtos.PersonDto;
 import Dtos.UserDto;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -8,9 +7,10 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import services.ClientService;
@@ -20,13 +20,12 @@ import java.util.ArrayList;
 
 public class StartseiteController {
     ObservableList<UserDto> usersList;
-    Button LogoutButton;
+
+    ClientService client;
 
     @FXML
-    TextField ShownMessage;
-    ClientService client;
-    @FXML
     ListView<UserDto> PlayersList;
+
     private ClientService _clientService;
     private String username = "";
     private int opponentId;
@@ -115,7 +114,28 @@ public class StartseiteController {
 
     public void displayRequest() {
         String message = prepareMessage();
-        ShownMessage.setText(message);
+        Platform.runLater(() -> {
+            ButtonType acceptButton = new ButtonType("Akzeptieren", ButtonBar.ButtonData.OK_DONE);
+            ButtonType declineButton = new ButtonType("Ablehnen", ButtonBar.ButtonData.CANCEL_CLOSE);
+            Alert dialog = new Alert(
+                    Alert.AlertType.CONFIRMATION,
+                    message,
+                    acceptButton,
+                    declineButton
+            );
+            dialog.setHeaderText("Spielanfrage");
+
+            dialog.showAndWait()
+                    .filter(response -> response.equals(acceptButton) || response.equals(declineButton))
+                    .ifPresent(response -> {
+                        if (response.equals(acceptButton)) {
+                            AcceptRequest();
+                        } else if (response.equals(declineButton)) {
+                            DeclineRequest();
+                        }
+                    });
+        });
+
     }
 
     public String prepareMessage() {
@@ -150,7 +170,9 @@ public class StartseiteController {
         try {
             String message = "/Decline " + otherPlayerId + " " + _clientService.getInstance(username).getClientId();
             _clientService.getInstance(this.username).sendText(message);
+            _clientService.getInstance(this.username).setLatestMessage(null);
             activeMessage = null;
+
         } catch (IOException e) {
             //TODO: Open error toast or something like that
         }
@@ -162,7 +184,7 @@ public class StartseiteController {
     }
 
     public synchronized void OpenGameView() throws IOException {
-        Stage stage = (Stage) ShownMessage.getScene().getWindow();
+        Stage stage = (Stage) PlayersList.getScene().getWindow();
         FXMLLoader loader = new FXMLLoader(App.class.getResource("game.fxml"));
         try {
             Platform.runLater(() -> {
