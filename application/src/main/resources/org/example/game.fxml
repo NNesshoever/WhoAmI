@@ -16,74 +16,65 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane alignment="CENTER" hgap="10.0" minHeight="591.0" minWidth="750.0" prefHeight="591.0" prefWidth="750.0" stylesheets="@styles.css" vgap="10.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.GameController">
+<GridPane alignment="CENTER" hgap="10.0" minHeight="600.0" minWidth="750.0" prefHeight="600.0" prefWidth="750.0" stylesheets="@styles.css" vgap="10.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.GameController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="179.0" minWidth="9.0" prefWidth="9.0" />
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="688.0" minWidth="10.0" prefWidth="688.0" />
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="259.0" minWidth="10.0" prefWidth="20.0" />
    </columnConstraints>
    <rowConstraints>
-      <RowConstraints maxHeight="400.0" minHeight="0.0" prefHeight="223.0" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="623.0" minHeight="10.0" prefHeight="290.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="400.0" minHeight="0.0" prefHeight="279.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="623.0" minHeight="10.0" prefHeight="322.0" vgrow="SOMETIMES" />
       <RowConstraints maxHeight="79.0" minHeight="10.0" prefHeight="70.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <SplitPane maxHeight="200.0" minHeight="200.0" orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.vgrow="NEVER">
-         <items>
-            <VBox prefHeight="200.0" prefWidth="100.0">
+      <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1">
+         <children>
+            <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" prefHeight="59.0" prefWidth="676.0">
                <children>
-                  <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="239.0" prefWidth="669.0">
-                     <children>
-                        <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" prefHeight="59.0" prefWidth="676.0">
-                           <children>
-                              <ImageView fx:id="imageView" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
-                                 <viewport>
-                                    <Rectangle2D />
-                                 </viewport>
-                              </ImageView>
-                           </children>
-                           <padding>
-                              <Insets left="10.0" right="10.0" top="10.0" />
-                           </padding>
-                        </HBox>
-                        <HBox alignment="CENTER" spacing="15.0">
-                           <VBox.margin>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </VBox.margin>
-                           <children>
-                              <Button fx:id="buttonSurrender" mnemonicParsing="false" onAction="#onButtonSurrenderClicked" styleClass="button, danger" stylesheets="@styles.css" text="Aufgeben">
-                                 <font>
-                                    <Font name="Segoe UI" size="12.0" />
-                                 </font>
-                                 <styleClass>
-                                    <String fx:value="danger" />
-                                    <String fx:value="button" />
-                                 </styleClass>
-                              </Button>
-                              <Button fx:id="buttonGuessed" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onButtonGuessedClicked" styleClass="button, warning" text="Erraten" />
-                           </children>
-                           <opaqueInsets>
-                              <Insets />
-                           </opaqueInsets>
-                        </HBox>
-                        <Label fx:id="labelDetails" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="65.0" prefWidth="669.0" styleClass="text" text="Name: TestPerson1, Beruf, Kinder Geschlecht, Land">
-                           <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </padding>
-                        </Label>
-                     </children>
-                  </VBox>
-               </children></VBox>
-         </items>
-         <GridPane.margin>
-            <Insets bottom="10.0" top="10.0" />
-         </GridPane.margin>
-      </SplitPane>
-      <ListView fx:id="listviewMessages" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="294.0" prefWidth="688.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+                  <ImageView fx:id="imageView" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
+                     <viewport>
+                        <Rectangle2D />
+                     </viewport>
+                  </ImageView>
+               </children>
+               <padding>
+                  <Insets left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="CENTER" spacing="15.0">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </VBox.margin>
+               <children>
+                  <Button fx:id="buttonSurrender" mnemonicParsing="false" onAction="#onButtonSurrenderClicked" styleClass="button, danger" stylesheets="@styles.css" text="Aufgeben">
+                     <font>
+                        <Font name="Segoe UI" size="12.0" />
+                     </font>
+                     <styleClass>
+                        <String fx:value="danger" />
+                        <String fx:value="button" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="buttonGuessed" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onButtonGuessedClicked" styleClass="button, warning" text="Erraten" />
+               </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </HBox>
+            <Label fx:id="labelDetails" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="87.0" prefWidth="686.0" styleClass="text" text="Name: TestPerson1, Beruf, Kinder Geschlecht, Land, asdb aihsbdhiasb idbasidbuas bdoubasoud boiasbdoab siodbioasndoasbiod basiodbioasbdpioabsoidbaoisb doasbdiobasoidbaoisbdoiabiodbaisbdpiasbdpiasbdpi baspidbpiasbdpi ab" wrapText="true">
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </Label>
+         </children>
+      </VBox>
+      <ListView fx:id="listviewMessages" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="322.0" prefWidth="688.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
          <GridPane.margin>
             <Insets />
-         </GridPane.margin></ListView>
-      <SplitPane dividerPositions="0.5" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+         </GridPane.margin>
+      </ListView>
+      <SplitPane dividerPositions="0.5" prefHeight="134.0" prefWidth="688.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
          <items>
             <TextField fx:id="textfieldMessage" styleClass="input-text">
                <font>
