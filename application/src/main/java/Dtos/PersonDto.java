@@ -224,14 +224,14 @@ public class PersonDto implements Serializable {
         setBase64Image();
         return
                 surname + " " + lastname +
-                        " (" + gender + ", " + age + " Jahre, " + height + " m, " + hairColor + ")\n" +
+                        " (" + gender + ", " + age + " Jahre, " + height + ", " + hairColor + ")\n" +
                         "Augenfarbe: " + eyeColor +
-                        " Beziehungsstatus: " + relationship +
-                        " Nationalität: " + nationality +
-                        " Persönlichkeit: " + generateReadableString(personality.toArray(new String[]{})) +
-                        " Accessories: " + generateReadableString(accessories.toArray(new String[]{})) +
-                        " Beruf: " + job +
-                        " Werke: " + generateReadableString(production.toArray(new String[]{}));
+                        "\nBeziehungsstatus: " + relationship +
+                        "\nNationalität: " + nationality +
+                        "\nPersönlichkeit: " + generateReadableString(personality.toArray(new String[]{})) +
+                        "\nAccessories: " + generateReadableString(accessories.toArray(new String[]{})) +
+                        "\nBeruf: " + job +
+                        "\nWerke: " + generateReadableString(production.toArray(new String[]{}));
     }
 }
 
