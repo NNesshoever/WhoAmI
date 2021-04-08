@@ -20,43 +20,42 @@ import java.util.Base64;
 import java.util.List;
 
 public class GameController {
-    private ClientService _clientService;
-    private String username = "";
     private final String OPPONENT = "Mitspieler";
-    private int opponentId;
     private final String CHAT_USERNAME = "Du";
 
-    PersonDto person;
-    ObservableList<String> listMessages;
-
-    @FXML
-    ListView<String> listviewMessages;
-
-    @FXML
-    TextField textfieldMessage;
-
-    @FXML
-    Button buttonGuessed;
-
-    @FXML
-    Button buttonSurrender;
-
-    @FXML
-    ImageView imageView;
     @SuppressWarnings({"FieldCanBeLocal", "SpellCheckingInspection"})
     private final String base64Img = "iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEPElEQVR4Xu2Xz2scZRjHn+edFWJPexKtwR5KclAyM8ugEKGwSBGKCl4WaWuoKP4NXipSLV78F1Ro1LYQhN6EqpiDEBR25wf1lKWEYIInySUsws77yGALS8laZinDwPe71+z77n4+++G7GxU+oA0oND3hhQGAR8AAGAC4AXB8LgADADcAjs8FYADgBsDxuQAMANwAOD4XgAGAGwDH5wIwAHAD4PhcAAYAbgAcnwvAAMANgONzARgAuAFwfC4AAwA3AI7PBWAA4AbA8bkADADcADg+F4ABgBsAx+cCMABwA+D4XAAGAG4AHJ8LwADADYDjcwEYALgBcHwuAAMANwCOzwVgAOAGwPG5AAwA3AA4PheAAYAbAMfnAjAAcAPg+FwABgBuAByfC8AAwA2A43MBGAC4AXB8LgADADcAjs8FYADgBsDxuQAMANwAOD4XgAG020CSJKfKsrxqZgMz6zrnRmb2WZ7nvy76znu93hkzu+69f83M1Dn3U6fTuTocDvcXvTOO476qfmxmsZn97Zy7vbS09PnOzs5k0TubONfqBUiS5Cnv/c9mdm5Whve+DILgrTRNf6gr6cGH/7uIPDN71sz+MrOXi6L4s+6dcRy/LSLfi4h75Owv3W739e3t7WndO5t6fqsDiKLofVX9ao6MvSzLzoqIryMrjuNvROTdk86o6tdpmn5Q575+v985OjraE5HnTzpnZht5nn9b584mn9vqAMIw/M45d2meEOfcymg0GtcRFobhgXPu9ElnvPf7RVGcqXNfFEUvqeq9/zmzmWXZlTp3NvncVgcQx/FNEbn4JANYW1s7DILguScVQK/Xe9HM/pj3Hr33N4qieK/JD7XOa7U6gMd8BdzPsmyl7ldAFEWbqroxR9KXWZZ9WEfgYDAIdnd3q6+A5TnnLmdZVoXcykerA6h+BJZleVdE+rP2vPdTVX0jz/Pqb7UeSZK8MJ1Of1PVZx85eKCqr6RpeljrQhGJouhNM7vjnAtmz5rZj6urqxe2trbKunc29fxWB1BJWF9ff3oymXxkZu+ISFdVh2b2aZ7n1S/5hR5hGC4HQXCtLMvz1QXOubuq+skiH/7DNxDH8asiUv272vPeV/8G3jo+Pv5iPB7/s9CbbOhQ6wNoyAPsyzAA2I/+P3AGwADADYDjcwEYALgBcHwuAAMANwCOzwVgAOAGwPG5AAwA3AA4PheAAYAbAMfnAjAAcAPg+FwABgBuAByfC8AAwA2A43MBGAC4AXB8LgADADcAjs8FYADgBsDxuQAMANwAOD4XgAGAGwDH5wIwAHAD4PhcAAYAbgAcnwvAAMANgONzARgAuAFwfC4AAwA3AI7PBWAA4AbA8bkADADcADg+F4ABgBsAx+cCMABwA+D4XAAGAG4AHJ8LwADADYDjcwEYALgBcHwuAAMANwCOzwVgAOAGwPG5AAwA3AA4/r+aSe6B2O4AawAAAABJRU5ErkJggg==";
 
+    PersonDto person;
+    ObservableList<String> listMessages;
+    @FXML
+    ListView<String> listviewMessages;
+    @FXML
+    TextField textfieldMessage;
+    @FXML
+    Button buttonGuessed;
+    @FXML
+    Button buttonSurrender;
+    @FXML
+    ImageView imageView;
     @FXML
     Label labelDetails;
+    private ClientService _clientService;
+    private String username = "";
+    private int opponentId;
+
+    public static <T> void addItem(ListView<T> listView, T item) {
+        List<T> messages = listView.getItems();
+        int lastIndex = messages.size();
+        messages.add(item);
+        listView.scrollTo(lastIndex);
+    }
 
     @FXML
     public void initialize() throws IOException {
         PersonDto person = _clientService.getInstance(this.username).getPerson();
         listMessages = FXCollections.observableArrayList();
         listviewMessages.setItems(listMessages);
-        byte[] imageBytes = Base64.getDecoder().decode(base64Img);
-
-        imageView.setImage(new Image((new ByteArrayInputStream(imageBytes))));
         textfieldMessage.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode().equals(KeyCode.ENTER)) {
                 sendMessage();
@@ -65,9 +64,20 @@ public class GameController {
         setActiveMessage();
         String Details = person.toString();
         labelDetails.setText(Details);
+
+        if (person.getBase64Image() != null && !person.getBase64Image().isEmpty()) {
+            setImage(person.getBase64Image());
+        } else {
+            setImage(base64Img);
+        }
     }
 
-    public void setPerson(PersonDto RandomPerson){
+    public void setImage(String pBase64Img) {
+        byte[] imageBytes = Base64.getDecoder().decode(pBase64Img);
+        imageView.setImage(new Image((new ByteArrayInputStream(imageBytes))));
+    }
+
+    public void setPerson(PersonDto RandomPerson) {
         person = RandomPerson;
     }
 
@@ -76,7 +86,7 @@ public class GameController {
     }
 
     @FXML
-    public void onButtonSurrenderClicked(){
+    public void onButtonSurrenderClicked() {
     }
 
     @FXML
@@ -87,7 +97,7 @@ public class GameController {
     private void sendMessage() {
         String text = textfieldMessage.getText().trim();
         if (text.length() > 0) {
-            addItem(listviewMessages,CHAT_USERNAME+ ": " + text);
+            addItem(listviewMessages, CHAT_USERNAME + ": " + text);
             textfieldMessage.clear();
             sendMessageToServer(text);
         }
@@ -95,7 +105,7 @@ public class GameController {
 
     public void sendMessageToServer(String userMessage) {
         try {
-            String message = "/SendTextMessage," + userMessage+ ","+ opponentId;
+            String message = "/SendTextMessage," + userMessage + "," + opponentId;
             _clientService.getInstance(this.username).sendText(message);
         } catch (IOException e) {
             //TODO: Open error toast or something like that
@@ -110,16 +120,17 @@ public class GameController {
         this.opponentId = opponentId;
     }
 
-
-    public void setActiveMessage(){
+    public void setActiveMessage() {
         Thread t = new Thread(() -> {
             while (true) {
                 try {
                     String textMessage = _clientService.getInstance(this.username).getLatestTextMessage();
-                    if(textMessage.length()>0){
-                        Platform.runLater(()-> { addItem(listviewMessages, OPPONENT +": " + textMessage); });
+                    if (textMessage.length() > 0) {
+                        Platform.runLater(() -> {
+                            addItem(listviewMessages, OPPONENT + ": " + textMessage);
+                        });
                     }
-                    } catch (Exception e) {
+                } catch (Exception e) {
                 }
                 try {
                     Thread.sleep(10);
@@ -131,13 +142,5 @@ public class GameController {
 
         });
         t.start();
-    }
-
-
-    public static <T> void addItem(ListView<T> listView, T item) {
-        List<T> messages = listView.getItems();
-        int lastIndex = messages.size();
-        messages.add(item);
-        listView.scrollTo(lastIndex);
     }
 }

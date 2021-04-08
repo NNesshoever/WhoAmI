@@ -1,18 +1,28 @@
 package Dtos;
 
+import org.example.App;
+
+import java.io.IOException;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
 
 public class PersonDto implements Serializable {
     private int id;
+    private String imagePath;
+    private String base64Image;
     private String surname;
     private String lastname;
     private int age;
+    private String birthdate;
     private String height;
     private String hairColor;
     private String eyeColor;
     private String job;
-    private String accessoires;
+    private ArrayList<String> accessories;
     private ArrayList<String> personality = new ArrayList<>();
     private String relationship;
     private String nationality;
@@ -20,23 +30,45 @@ public class PersonDto implements Serializable {
     private String gender;
 
     public PersonDto() {
+
     }
 
-    public PersonDto(int id, String surname, String lastname, int age, String height, String hairColor, String eyeColor, String job, String accessoires, ArrayList<String> personality, String relationship, String nationality, ArrayList<String> production, String gender) {
+    public PersonDto(int id, String imagePath, String surname, String lastname, String birthdate, String height, String hairColor, String eyeColor, String job, ArrayList<String> accessories, ArrayList<String> personality, String relationship, String nationality, ArrayList<String> production, String gender) {
         this.id = id;
+        this.imagePath = imagePath;
         this.surname = surname;
         this.lastname = lastname;
-        this.age = age;
+        this.birthdate = birthdate;
         this.height = height;
         this.hairColor = hairColor;
         this.eyeColor = eyeColor;
         this.job = job;
-        this.accessoires = accessoires;
+        this.accessories = accessories;
         this.personality = personality;
         this.relationship = relationship;
         this.nationality = nationality;
         this.production = production;
         this.gender = gender;
+
+        setCalculatedAge();
+        setBase64Image();
+    }
+
+    private void setBase64Image() {
+        if (!imagePath.isEmpty()) {
+            try {
+                base64Image = Base64.getEncoder().encodeToString(App.class.getResourceAsStream(imagePath).readAllBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void setCalculatedAge() {
+        String[] splitBirthDate = birthdate.split("\\.");
+        LocalDate birthdate = LocalDate.of(Integer.parseInt(splitBirthDate[2]), Integer.parseInt(splitBirthDate[1]), Integer.parseInt(splitBirthDate[0]));
+        LocalDate now = LocalDate.now();
+        setAge(Period.between(birthdate, now).getYears());
     }
 
     public int getId() {
@@ -45,6 +77,22 @@ public class PersonDto implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public String getBase64Image() {
+        return base64Image;
+    }
+
+    public void setBase64Image(String base64Image) {
+        this.base64Image = base64Image;
     }
 
     public String getSurname() {
@@ -69,6 +117,14 @@ public class PersonDto implements Serializable {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public String getBirthdate() {
+        return birthdate;
+    }
+
+    public void setBirthdate(String birthdate) {
+        this.birthdate = birthdate;
     }
 
     public String getHeight() {
@@ -103,12 +159,12 @@ public class PersonDto implements Serializable {
         this.job = job;
     }
 
-    public String getAccessoires() {
-        return accessoires;
+    public ArrayList<String> getAccessories() {
+        return accessories;
     }
 
-    public void setAccessoires(String accessoires) {
-        this.accessoires = accessoires;
+    public void setAccessories(ArrayList<String> accessories) {
+        this.accessories = accessories;
     }
 
     public ArrayList<String> getPersonality() {
@@ -151,22 +207,31 @@ public class PersonDto implements Serializable {
         this.gender = gender;
     }
 
+    private String generateReadableString(String[] arr){
+        String result = "";
+        for (String s : arr) {
+            result = s + ", ";
+        }
+        if(arr.length > 0){
+            result = result.substring(0, result.length()-2);
+        }
+        return  result;
+    }
+
     @Override
     public String toString() {
+        setCalculatedAge();
+        setBase64Image();
         return
-                "Surname='" + surname +
-                ", Lastname='" + lastname +
-                ", Age=" + age +
-                ", Height='" + height +
-                ", HairColor='" + hairColor +
-                ", Eye Color='" + eyeColor +
-                ", Job='" + job +
-                ", Accessories='" + accessoires +
-                ", Personality=" + personality +
-                ", Relationship='" + relationship +
-                ", Nationality='" + nationality +
-                ", Production=" + production +
-                ", Gender='" + gender;
+                surname + " " + lastname +
+                        " (" + gender + ", " + age + " Jahre, " + height + " m, " + hairColor + ")\n" +
+                        "Augenfarbe: " + eyeColor +
+                        " Beziehungsstatus: " + relationship +
+                        " Nationalität: " + nationality +
+                        " Persönlichkeit: " + generateReadableString(personality.toArray(new String[]{})) +
+                        " Accessories: " + generateReadableString(accessories.toArray(new String[]{})) +
+                        " Beruf: " + job +
+                        " Werke: " + generateReadableString(production.toArray(new String[]{}));
     }
 }
 
