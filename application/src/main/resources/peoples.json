@@ -1,31 +1,5 @@
 [
   {
-    "id": 0,
-    "surname": "Vorname",
-    "lastname": "Nachname",
-    "age": 0,
-    "birthdate": "",
-    "height": "Größe in m",
-    "hairColor": "Haarfarbe",
-    "eyeColor": "Augenfarbe",
-    "job": "Beruf",
-    "accessories": [
-      "Hut",
-      "Halskette",
-      "Krone"
-    ],
-    "personality": [
-      "Persönlichkeit",
-      "Charaktereigenschaften"
-    ],
-    "relationship": "Beziehungsstatus",
-    "nationality": "Nationalität",
-    "production": [
-      ""
-    ],
-    "gender": "Geschlecht"
-  },
-  {
     "id": 1,
     "imagePath": "people-images/Elizabeth-Alexandra-Mary.jpg",
     "surname": "Elizabeth Alexandra",
