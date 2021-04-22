@@ -1,66 +1,420 @@
 [
   {
     "id": 1,
-    "surname": "surname",
-    "lastname": "lastname",
-    "age": "1",
-    "height": "height",
-    "hairColor": "hairColor",
-    "eyeColor": "eyeColor",
-    "job": "job",
-    "accessoires": "accessoires",
-    "personality": ["personality"],
-    "relationship": "relationship",
-    "nationality": "nationality",
-    "production": ["production"],
-    "gender": "Gender"
+    "imagePath": "people-images/Elizabeth-Alexandra-Mary.jpg",
+    "surname": "Elizabeth Alexandra",
+    "lastname": "Mary",
+    "age": 0,
+    "birthdate": "21.04.1926",
+    "height": "1.63 m",
+    "hairColor": "Blond",
+    "eyeColor": "Blau",
+    "job": "Queen of United Kingdom",
+    "accessories": [
+      "Hut",
+      "Halskette"
+    ],
+    "personality": [
+      "Tierfreundlich",
+      "Familienmensch"
+    ],
+    "relationship": "Verheiratet",
+    "nationality": "England",
+    "production": [
+      ""
+    ],
+    "gender": "Weiblich"
   },
   {
     "id": 2,
-    "surname": "2surname",
-    "lastname": "2lastname",
-    "age": "2",
-    "height": "2height",
-    "hairColor": "2hairColor",
-    "eyeColor": "2eyeColor",
-    "job": "2job",
-    "accessoires": "2accessoires",
-    "personality": ["2personality"],
-    "relationship": "2relationship",
-    "nationality": "2nationality",
-    "production": ["2production"],
-    "gender": "2Gender"
+    "surname": "Helene",
+    "lastname": "Fischer",
+    "imagePath": "people-images/Helene-Fischer.jpg",
+    "age": 0,
+    "birthdate": "05.08.1984",
+    "height": "1,58 m",
+    "hairColor": "Blond",
+    "eyeColor": "Grün / Smaragdgrün",
+    "job": "Sängerin, Moderatorin",
+    "accessories": [
+      "Mikrofon",
+      "Armband"
+    ],
+    "personality": [
+      "Zur Öffentlichkeit verschlossen",
+      "Sympathisch",
+      "Männerschwarm"
+    ],
+    "relationship": "Ledig",
+    "nationality": "Deutsch",
+    "production": [
+      "Atemlos - Durch die Nacht",
+      "Herzbeben",
+      "Regenbogenfarben",
+      "Die Helene Fischer Show"
+    ],
+    "gender": "Weiblich"
   },
   {
     "id": 3,
-    "surname": "3surname",
-    "lastname": "3lastname",
-    "age": "3",
-    "height": "3height",
-    "hairColor": "3hairColor",
-    "eyeColor": "3eyeColor",
-    "job": "3job",
-    "accessoires": "3accessoires",
-    "personality": ["3personality"],
-    "relationship": "3relationship",
-    "nationality": "3nationality",
-    "production": ["3production"],
-    "gender": "3Gender"
+    "surname": "Johnny",
+    "lastname": "Depp",
+    "imagePath": "people-images/Johnny-Depp.jpg",
+    "age": 0,
+    "birthdate": "09.06.1963",
+    "height": "1,75  m",
+    "hairColor": "Braun",
+    "eyeColor": "Braun",
+    "job": "Schauspieler, Musiker",
+    "accessories": [
+      "Hut",
+      "Halskette",
+      "Ohrringe",
+      "Armbänder"
+    ],
+    "personality": [
+      "Frauenschwarm ",
+      "Rebell",
+      "Hutliebhaber",
+      "Pirat"
+    ],
+    "relationship": "Geschieden",
+    "nationality": "USA",
+    "production": [
+      "Fluch der Karibik",
+      "The Lone Ranger",
+      "Phantastische Tierwesen",
+      "Mortedecai",
+      "Charlie und die Schokoladenfabrik"
+    ],
+    "gender": "Männlich"
   },
   {
     "id": 4,
-    "surname": "4surname",
-    "lastname": "4lastname",
-    "age": "4",
-    "height": "4height",
-    "hairColor": "4hairColor",
-    "eyeColor": "4eyeColor",
-    "job": "4job",
-    "accessoires": "4accessoires",
-    "personality": ["4personality"],
-    "relationship": "4relationship",
-    "nationality": "4nationality",
-    "production": ["4production"],
-    "gender": "4Gender"
+    "surname": "Brad",
+    "lastname": "Pitt",
+    "imagePath": "people-images/Brad-Pitt.jpg",
+    "age": 0,
+    "birthdate": "18.12.1963",
+    "height": "1,82 m",
+    "hairColor": "Blond",
+    "eyeColor": "Blau",
+    "job": "Schauspieler, Produzent, Designer, Unternehmer",
+    "accessories": [
+      "Schal",
+      "Ringe"
+    ],
+    "personality": [
+      "Frauenschwarm",
+      "Familienmensch"
+    ],
+    "relationship": "Verheiratet",
+    "nationality": "USA",
+    "production": [
+      "Fight Club",
+      "World War Z",
+      "Herz aus Stahl",
+      "Ocean's Eleven",
+      "Troja"
+    ],
+    "gender": "Männlich"
+  },
+  {
+    "id": 5,
+    "surname": "Angelina",
+    "lastname": "Jolie",
+    "imagePath": "people-images/Angelina-Jolie.jpg",
+    "age": 0,
+    "birthdate": "04.06.1975",
+    "height": "1,69 m",
+    "hairColor": "Schwarz",
+    "eyeColor": "Blau",
+    "job": "Schauspielerin, Regisseurin, Unternehmerin, Model",
+    "accessories": [
+      "Ohrringe",
+      "Armbänder"
+    ],
+    "personality": [
+      "Psychopathin",
+      "Verführerin",
+      "Self-made woman"
+    ],
+    "relationship": "Verheiratet",
+    "nationality": "USA",
+    "production": [
+      "Lara Croft: Tomb Raider",
+      "Nur noch 60 Sekunden",
+      "Hackers – Im Netz des FBI",
+      "Maleficent – Die dunkle Fee",
+      "Mr. and Mrs. Smith"
+    ],
+    "gender": "Weiblich"
+  },
+  {
+    "id": 6,
+    "surname": "Tom",
+    "lastname": "Cruise",
+    "imagePath": "people-images/Tom-Cruise.jpg",
+    "age": 0,
+    "birthdate": "03.07.1962",
+    "height": "1,70 m",
+    "hairColor": "Braun",
+    "eyeColor": "Grün",
+    "job": "Schauspieler, Produzent",
+    "accessories": [],
+    "personality": [
+      "Actiongeladen",
+      "Self-made man",
+      "Geheimnisvoll"
+    ],
+    "relationship": "Geschieden",
+    "nationality": "USA",
+    "production": [
+      "Barry Seal: Only in America",
+      "Jack Reacher",
+      "Valkyrie",
+      "Mission: Impossible",
+      "Top Gun"
+    ],
+    "gender": "Männlich"
+  },
+  {
+    "id": 7,
+    "surname": "Angela",
+    "lastname": "Merkel",
+    "imagePath": "people-images/Angela-Merkel.jpg",
+    "age": 0,
+    "birthdate": "17.07.1954",
+    "height": "1,67 m",
+    "hairColor": "Getönt",
+    "eyeColor": "Blau",
+    "job": "Bundeskanzlerin, Mitglied des Bundestages, Wissenschaftlerin",
+    "accessories": [],
+    "personality": [
+      "Scheu",
+      "Wachsam",
+      "Kontrolliert"
+    ],
+    "relationship": "Verheiratet",
+    "nationality": "Deutsch",
+    "production": [
+      "Mein Weg: ein Gespräch mit Hugo Müller-Vogg",
+      "Machtworte: die Standpunkte der Kanzlerin Angela Merkel"
+    ],
+    "gender": "Weiblich"
+  },
+  {
+    "id": 8,
+    "surname": "Barack",
+    "lastname": "Obama",
+    "imagePath": "people-images/Barack-Obama.jpg",
+    "age": 0,
+    "birthdate": "04.08.1961",
+    "height": "1,87 m",
+    "hairColor": "Grau",
+    "eyeColor": "Braun",
+    "job": "Jurist, Staatsoberhaupt",
+    "accessories": [],
+    "personality": [
+      "Familienmensch",
+      "Workaholic",
+      "Introvertiert"
+    ],
+    "relationship": "Verheiratet",
+    "nationality": "USA",
+    "production": [
+      "Ein verheißenes Land",
+      "Ein amerikanischer Traum: Die Geschichte meiner Familie",
+      "Es braucht Mut"
+    ],
+    "gender": "Männlich"
+  },
+  {
+    "id": 9,
+    "surname": "Wladimir",
+    "lastname": "Putin",
+    "imagePath": "people-images/Wladimir-Putin.jpg",
+    "age": 0,
+    "birthdate": "07.10.1952",
+    "height": "1,70 m",
+    "hairColor": "Blond",
+    "eyeColor": "Blau",
+    "job": "Staatspräsident, Ministerpräsident, Staatspräsident, Chef einer Institution / Organisation, Jurist",
+    "accessories": [],
+    "personality": [
+      "Zielstrebig",
+      "Geheimnisvoll",
+      "Actiongeladen"
+    ],
+    "relationship": "Geschieden",
+    "nationality": "Russisch",
+    "production": [
+      ""
+    ],
+    "gender": "Männlich"
+  },
+  {
+    "id": 10,
+    "surname": "George",
+    "lastname": "Washington",
+    "imagePath": "people-images/George-Washington.jpg",
+    "age": 0,
+    "birthdate": "22.02.1732",
+    "height": "1,88 m",
+    "hairColor": "Blond",
+    "eyeColor": "Braun",
+    "job": "Politiker, Kartograph",
+    "accessories": [
+      "Schal"
+    ],
+    "personality": [
+      "Anführer",
+      "Versöhner"
+    ],
+    "relationship": "Verheiratet",
+    "nationality": "USA",
+    "production": [
+      "USA"
+    ],
+    "gender": "Männlich"
+  },
+  {
+    "id": 11,
+    "surname": "Napoleon",
+    "lastname": "Bonaparte",
+    "imagePath": "people-images/Napoleon-Bonaparte.jpg",
+    "age": 0,
+    "birthdate": "15.08.1769",
+    "height": "1,68 m",
+    "hairColor": "Braun",
+    "eyeColor": "Braun",
+    "job": "Kaiser, Kriegsherr, Eroberer",
+    "accessories": [
+      "Hut",
+      "Strumpfhose"
+    ],
+    "personality": [
+      "Volksliebling",
+      "Anführer",
+      "Bewundert",
+      "Gehasst"
+    ],
+    "relationship": "Verheiratet",
+    "nationality": "Französisch",
+    "production": [
+      "Frankreich"
+    ],
+    "gender": "Männlich"
+  },
+  {
+    "id": 12,
+    "surname": "Wolfgang",
+    "lastname": "Amadeus Mozart",
+    "imagePath": "people-images/Wolfgang-Amadeus-Mozart.jpg",
+    "age": 0,
+    "birthdate": "27.01.1756",
+    "height": "1,77 m",
+    "hairColor": "Blond",
+    "eyeColor": "Braun",
+    "job": "Musiker, Komponist",
+    "accessories": [
+      "Perücke"
+    ],
+    "personality": [
+      "Wunderkind",
+      "Verwöhnt",
+      "Verschwenderisch"
+    ],
+    "relationship": "Verheiratet",
+    "nationality": "Österreich",
+    "production": [
+      "Eine kleine Nachtmusik",
+      "Die Zauberflöte",
+      "Die Entführung aus dem Serail"
+    ],
+    "gender": "Männlich"
+  },
+  {
+    "id": 13,
+    "surname": "Thomas",
+    "lastname": "Müller",
+    "imagePath": "people-images/Thomas-Mueller.jpg",
+    "age": 0,
+    "birthdate": "13.09.1989",
+    "height": "1,86m",
+    "hairColor": "Dunkelblond",
+    "eyeColor": "Blau",
+    "job": "Fußballspieler",
+    "accessories": [
+      "Fußball"
+    ],
+    "personality": [
+      "Scherzkeks",
+      "Familienmensch",
+      "Komiker"
+    ],
+    "relationship": "Verheiratet",
+    "nationality": "Deutsch",
+    "production": [
+      "Mein Weg zum Traumverein",
+      "Mein Weg zum Fußballprofi"
+    ],
+    "gender": "Männlich"
+  },
+  {
+    "id": 14,
+    "surname": "Christiano",
+    "lastname": "Ronaldo",
+    "imagePath": "people-images/Christian-Ronaldo.jpg",
+    "age": 0,
+    "birthdate": "05.02.1985",
+    "height": "1,86 m",
+    "hairColor": "Schwarz",
+    "eyeColor": "Braun",
+    "job": "Fußballer, Model",
+    "accessories": [
+      "Armband",
+      "Ohrringe"
+    ],
+    "personality": [
+      "Verspielt",
+      "Selbstbewusst"
+    ],
+    "relationship": "Ledig",
+    "nationality": "Portugiesisch",
+    "production": [
+      "Moments",
+      "Cristiano Ronaldo Striker Force 7. Volumen 1",
+      "Champions League",
+      "ballon d'or"
+    ],
+    "gender": "Männlich"
+  },
+  {
+    "id": 15,
+    "surname": "Manuel",
+    "lastname": "Neuer",
+    "imagePath": "people-images/Manuel-Neuer.jpg",
+    "age": 0,
+    "birthdate": "27.03.1986",
+    "height": "1,93 m",
+    "hairColor": "Blond",
+    "eyeColor": "Blau",
+    "job": "Fußballer",
+    "accessories": [
+      "Fußball",
+      "Torwarthandschuhe"
+    ],
+    "personality": [
+      "Familienmensch",
+      "Heimatsgebunden"
+    ],
+    "relationship": "Verheiratet",
+    "nationality": "Deutsch",
+    "production": [
+      "Welttorhüter",
+      "Deutschlands Fußballer des Jahres"
+    ],
+    "gender": "Männlich"
   }
 ]
