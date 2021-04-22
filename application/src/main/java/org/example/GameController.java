@@ -5,19 +5,20 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.stage.Stage;
 import services.ClientService;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GameController {
     private ClientService _clientService;
@@ -25,6 +26,7 @@ public class GameController {
     private final String OPPONENT = "Mitspieler";
     private int opponentId;
     private final String CHAT_USERNAME = "Du";
+    private boolean gameIsRunning = true;
 
     PersonDto person;
     ObservableList<String> listMessages;
@@ -72,11 +74,52 @@ public class GameController {
     }
 
     @FXML
-    public void onButtonGuessedClicked() {
+    public void onButtonGuessedClicked() throws IOException {
+        openModal(false);
+        _clientService.getInstance(this.username)
+                .sendText("/opponentLost " + opponentId + " " + _clientService.getInstance(this.username).getClientId());
     }
 
     @FXML
-    public void onButtonSurrenderClicked(){
+    public void onButtonSurrenderClicked() throws IOException {
+        openModal(false);
+        _clientService.getInstance(this.username)
+                .sendText("/opponentLost " + opponentId + " " + _clientService.getInstance(this.username).getClientId());
+    }
+
+    @FXML
+    public void openModal(boolean won){
+        String modalMessage = "";
+        if(won == true){
+            modalMessage = "Sie haben gewonnen!";
+        }
+        else{
+            modalMessage = "Sie haben verloren... :(";
+        }
+        String finalModalMessage = modalMessage;
+
+        Platform.runLater(() -> {
+            Alert dialog = new Alert(
+                    Alert.AlertType.INFORMATION,
+                    finalModalMessage
+            );
+            dialog.showAndWait()
+                    .filter(response -> response.equals(ButtonType.OK))
+                    .ifPresent(response -> openStartseite());
+        });
+    }
+
+    @FXML
+    public void openStartseite(){
+        try {
+            Stage stage = (Stage) buttonGuessed.getScene().getWindow();
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("Startseite.fxml"));
+            Scene scene = new Scene(loader.load());
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -113,11 +156,18 @@ public class GameController {
 
     public void setActiveMessage(){
         Thread t = new Thread(() -> {
-            while (true) {
+            while (gameIsRunning) {
                 try {
                     String textMessage = _clientService.getInstance(this.username).getLatestTextMessage();
                     if(textMessage.length()>0){
-                        Platform.runLater(()-> { addItem(listviewMessages, OPPONENT +": " + textMessage); });
+                        if(textMessage.startsWith("/opponentLost")){
+                            gameIsRunning = false;
+                            openModal(true);
+                        }else if(!textMessage.startsWith("/GameRequest")) {
+                            Platform.runLater(() -> {
+                                addItem(listviewMessages, OPPONENT + ": " + textMessage);
+                            });
+                        }
                     }
                     } catch (Exception e) {
                 }

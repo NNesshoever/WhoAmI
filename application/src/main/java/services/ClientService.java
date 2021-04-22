@@ -89,10 +89,14 @@ public class ClientService {
                     try {
                         if (dis.available() > 0) {
                             latestMessage = dis.readUTF();
-                            if(latestMessage.startsWith("/Accept") || latestMessage.startsWith("/recMessage")){
-                                int messageKey = latestMessage.split(" ")[0].length()+1;
-                                latestTextMessage = latestMessage.substring(messageKey);
-                                System.out.println(latestTextMessage);
+                            if(latestMessage.startsWith("/Accept") || latestMessage.startsWith("/recMessage") ||latestMessage.startsWith("/opponentLost")){
+                                System.out.println(latestMessage);
+                                if(latestMessage.startsWith("/opponentLost")) {
+                                    latestTextMessage = latestMessage;
+                                }else {
+                                    int messageKey = latestMessage.split(" ")[0].length()+1;
+                                    latestTextMessage = latestMessage.substring(messageKey);
+                                }
                             }
                         }
                     } catch (IOException ignored) {

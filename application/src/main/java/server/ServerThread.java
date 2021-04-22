@@ -56,7 +56,10 @@ public class ServerThread extends Thread {
                     } else if (message.startsWith("/SendTextMessage")) {
                         sendMessage(message);
                         System.out.println("Send Text Message");
-                    } else {
+                    } else if (message.startsWith("/opponentLost")) {
+                        informOverVictory(message);
+                        System.out.println("informed opponent over victory");
+                    }else {
                         System.out.println("Received message from client" + clientId + ": " + message);
                         ClientManager.addMessage(clientId, message);
                     }
@@ -95,6 +98,19 @@ public class ServerThread extends Thread {
         otherWriter.writeUTF(message);
         otherWriter.flush();
 
+    }
+
+    private void informOverVictory(String message) throws IOException {
+        String[] messageParts = message.split("\\s+");
+        int winningPlayerId = Integer.parseInt(messageParts[1]);
+        String opponentId = messageParts[2];
+
+        ServerThread askedPlayerThread = ServerThreadsManager.getInstance().getThreadByClientID(winningPlayerId);
+        DataOutputStream otherWriter = askedPlayerThread.getWriter();
+        String messagetoSend = "/opponentLost " + winningPlayerId + " " + opponentId;
+
+        otherWriter.writeUTF(messagetoSend);
+        otherWriter.flush();
     }
 
     private void handleInitConnection(DataOutputStream writer, String initMessage) throws IOException {

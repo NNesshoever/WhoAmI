@@ -49,6 +49,7 @@ public class StartseiteController {
         usersList = FXCollections.observableArrayList();
         PlayersList.setItems(usersList);
         loadClientList();
+        activeMessage = null;
         setActiveMessage();
     }
 
@@ -73,7 +74,7 @@ public class StartseiteController {
     }
 
     public void SendGameRequest(MouseEvent mouseEvent) throws IOException {
-        if (mouseEvent.getClickCount() == 2 && PlayersList.getSelectionModel().getSelectedItem() != null) {
+        if (PlayersList.getSelectionModel().getSelectedItem() != null) {
             String message = "/GameRequest " + PlayersList.getSelectionModel().getSelectedItem().getId() + " " + _clientService.getInstance(this.username).getClientId();
             opponentId = PlayersList.getSelectionModel().getSelectedItem().getId();
             try {
@@ -90,7 +91,6 @@ public class StartseiteController {
                 try {
                     if (activeMessage == null) {
                         activeMessage = _clientService.getInstance(this.username).getLatestMessage();
-
                         if (activeMessage.startsWith("/GameRequest")) {
                             opponentId = Integer.parseInt(activeMessage.split(" ")[1]);
                             displayRequest();
