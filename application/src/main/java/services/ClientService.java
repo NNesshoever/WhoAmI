@@ -4,30 +4,33 @@ package services;
 import Dtos.PersonDto;
 import Dtos.UserDto;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 
 public class ClientService {
 
-    private static Socket socket;
     private static final int PORT = 9995;
+    private static Socket socket;
+    private static String latestMessage;
+    private static String latestTextMessage;
+    private static ClientService instance;
+    private static ClientService single_instance = null;
     private int clientId = -1;
     private DataOutputStream dos;
     private DataInputStream dis;
     private ObjectInputStream disObject;
-    private static String latestMessage;
-    private static String latestTextMessage;
     private boolean ContinueRead = true;
     private boolean ReadIsRunning;
-    private static ClientService instance;
-    private static ClientService single_instance = null;
 
     private ClientService(String username) throws IOException {
         socket = new Socket(InetAddress.getLocalHost().getHostName(), PORT);
         dos = new DataOutputStream(socket.getOutputStream());
-        dos.writeUTF("/InitClient,"+ username);
+        dos.writeUTF("/InitClient," + username);
         dos.flush();
         dis = new DataInputStream(socket.getInputStream());
         String id = dis.readUTF();
@@ -52,7 +55,7 @@ public class ClientService {
 
     public static String getLatestTextMessage() {
         String text = latestTextMessage;
-        latestTextMessage = "";
+        latestTextMessage = null;
         return text;
     }
 
@@ -60,7 +63,7 @@ public class ClientService {
         ClientService.latestTextMessage = latestTextMessage;
     }
 
-    public static String getLatestMessage(){
+    public static String getLatestMessage() {
         return latestMessage;
     }
 
@@ -68,12 +71,10 @@ public class ClientService {
         ClientService.latestMessage = latestMessage;
     }
 
-    /**
-     * Sends a text message to the server and outputs the response message.
-     *
-     * @param message The message to send to the server.
-     * @throws IOException When stream usage fails.
-     */
+    public static void setInstance() {
+        single_instance = null;
+    }
+
     public void sendText(String message) throws IOException {
         if (clientId > 0) {
             dos.writeUTF(message);
@@ -83,18 +84,18 @@ public class ClientService {
 
     public void read() {
         Thread t = new Thread(() -> {
-            if(!ReadIsRunning) {
+            if (!ReadIsRunning) {
                 while (ContinueRead) {
                     ReadIsRunning = true;
                     try {
                         if (dis.available() > 0) {
                             latestMessage = dis.readUTF();
-                            if(latestMessage.startsWith("/Accept") || latestMessage.startsWith("/recMessage") ||latestMessage.startsWith("/opponentLost")){
+                            if (latestMessage.startsWith("/Accept") || latestMessage.startsWith("/recMessage") || latestMessage.startsWith("/opponentLost")) {
                                 System.out.println(latestMessage);
-                                if(latestMessage.startsWith("/opponentLost")) {
+                                if (latestMessage.startsWith("/opponentLost")) {
                                     latestTextMessage = latestMessage;
-                                }else {
-                                    int messageKey = latestMessage.split(" ")[0].length()+1;
+                                } else {
+                                    int messageKey = latestMessage.split(" ")[0].length() + 1;
                                     latestTextMessage = latestMessage.substring(messageKey);
                                 }
                             }
@@ -114,11 +115,7 @@ public class ClientService {
         t.start();
     }
 
-    public static void setInstance(){
-        single_instance = null;
-    }
-
-    public ArrayList<UserDto> getClientList(){
+    public ArrayList<UserDto> getClientList() {
         ArrayList<UserDto> userDtos = null;
         try {
             ContinueRead = false;
@@ -134,9 +131,9 @@ public class ClientService {
         return userDtos;
     }
 
-    public PersonDto getPerson(){
+    public PersonDto getPerson() {
         PersonDto Person = null;
-        try{
+        try {
             ContinueRead = false;
             dos.writeUTF("/GetPerson");
             dos.flush();
@@ -144,13 +141,13 @@ public class ClientService {
             Person = (PersonDto) disObject.readObject();
             ContinueRead = true;
             read();
-        }catch(IOException | ClassNotFoundException e){
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return Person;
     }
 
-    public int getClientId(){
+    public int getClientId() {
         return this.clientId;
     }
 

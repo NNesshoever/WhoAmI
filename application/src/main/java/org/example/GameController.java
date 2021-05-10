@@ -18,16 +18,12 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GameController {
     private final String OPPONENT = "Mitspieler";
     private final String CHAT_USERNAME = "Du";
-    private boolean gameIsRunning = true;
-
     @SuppressWarnings({"FieldCanBeLocal", "SpellCheckingInspection"})
     private final String base64Img = "iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEPElEQVR4Xu2Xz2scZRjHn+edFWJPexKtwR5KclAyM8ugEKGwSBGKCl4WaWuoKP4NXipSLV78F1Ro1LYQhN6EqpiDEBR25wf1lKWEYIInySUsws77yGALS8laZinDwPe71+z77n4+++G7GxU+oA0oND3hhQGAR8AAGAC4AXB8LgADADcAjs8FYADgBsDxuQAMANwAOD4XgAGAGwDH5wIwAHAD4PhcAAYAbgAcnwvAAMANgONzARgAuAFwfC4AAwA3AI7PBWAA4AbA8bkADADcADg+F4ABgBsAx+cCMABwA+D4XAAGAG4AHJ8LwADADYDjcwEYALgBcHwuAAMANwCOzwVgAOAGwPG5AAwA3AA4PheAAYAbAMfnAjAAcAPg+FwABgBuAByfC8AAwA2A43MBGAC4AXB8LgADADcAjs8FYADgBsDxuQAMANwAOD4XgAG020CSJKfKsrxqZgMz6zrnRmb2WZ7nvy76znu93hkzu+69f83M1Dn3U6fTuTocDvcXvTOO476qfmxmsZn97Zy7vbS09PnOzs5k0TubONfqBUiS5Cnv/c9mdm5Whve+DILgrTRNf6gr6cGH/7uIPDN71sz+MrOXi6L4s+6dcRy/LSLfi4h75Owv3W739e3t7WndO5t6fqsDiKLofVX9ao6MvSzLzoqIryMrjuNvROTdk86o6tdpmn5Q575+v985OjraE5HnTzpnZht5nn9b584mn9vqAMIw/M45d2meEOfcymg0GtcRFobhgXPu9ElnvPf7RVGcqXNfFEUvqeq9/zmzmWXZlTp3NvncVgcQx/FNEbn4JANYW1s7DILguScVQK/Xe9HM/pj3Hr33N4qieK/JD7XOa7U6gMd8BdzPsmyl7ldAFEWbqroxR9KXWZZ9WEfgYDAIdnd3q6+A5TnnLmdZVoXcykerA6h+BJZleVdE+rP2vPdTVX0jz/Pqb7UeSZK8MJ1Of1PVZx85eKCqr6RpeljrQhGJouhNM7vjnAtmz5rZj6urqxe2trbKunc29fxWB1BJWF9ff3oymXxkZu+ISFdVh2b2aZ7n1S/5hR5hGC4HQXCtLMvz1QXOubuq+skiH/7DNxDH8asiUv272vPeV/8G3jo+Pv5iPB7/s9CbbOhQ6wNoyAPsyzAA2I/+P3AGwADADYDjcwEYALgBcHwuAAMANwCOzwVgAOAGwPG5AAwA3AA4PheAAYAbAMfnAjAAcAPg+FwABgBuAByfC8AAwA2A43MBGAC4AXB8LgADADcAjs8FYADgBsDxuQAMANwAOD4XgAGAGwDH5wIwAHAD4PhcAAYAbgAcnwvAAMANgONzARgAuAFwfC4AAwA3AI7PBWAA4AbA8bkADADcADg+F4ABgBsAx+cCMABwA+D4XAAGAG4AHJ8LwADADYDjcwEYALgBcHwuAAMANwCOzwVgAOAGwPG5AAwA3AA4/r+aSe6B2O4AawAAAABJRU5ErkJggg==";
-
     PersonDto person;
     ObservableList<String> listMessages;
     @FXML
@@ -42,6 +38,7 @@ public class GameController {
     ImageView imageView;
     @FXML
     Label labelDetails;
+    private boolean gameIsRunning = true;
     private ClientService _clientService;
     private String username = "";
     private int opponentId;
@@ -72,6 +69,7 @@ public class GameController {
         } else {
             setImage(base64Img);
         }
+        _clientService.getInstance(this.username).setLatestTextMessage(null);
     }
 
     public void setImage(String pBase64Img) {
@@ -88,6 +86,7 @@ public class GameController {
         openModal(false);
         _clientService.getInstance(this.username)
                 .sendText("/opponentLost " + opponentId + " " + _clientService.getInstance(this.username).getClientId());
+        _clientService.getInstance(this.username).setLatestTextMessage(null);
     }
 
     @FXML
@@ -95,15 +94,15 @@ public class GameController {
         openModal(false);
         _clientService.getInstance(this.username)
                 .sendText("/opponentLost " + opponentId + " " + _clientService.getInstance(this.username).getClientId());
+        _clientService.getInstance(this.username).setLatestTextMessage(null);
     }
 
     @FXML
-    public void openModal(boolean won){
+    public void openModal(boolean won) {
         String modalMessage = "";
-        if(won == true){
+        if (won) {
             modalMessage = "Sie haben gewonnen!";
-        }
-        else{
+        } else {
             modalMessage = "Sie haben verloren... :(";
         }
         String finalModalMessage = modalMessage;
@@ -120,7 +119,7 @@ public class GameController {
     }
 
     @FXML
-    public void openStartseite(){
+    public void openStartseite() {
         try {
             Stage stage = (Stage) buttonGuessed.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(App.class.getResource("Startseite.fxml"));
@@ -168,26 +167,23 @@ public class GameController {
             while (gameIsRunning) {
                 try {
                     String textMessage = _clientService.getInstance(this.username).getLatestTextMessage();
-                    if(textMessage.length()>0){
-                        if(textMessage.startsWith("/opponentLost")){
+                    if (textMessage.length() > 0) {
+                        if (textMessage.startsWith("/opponentLost")) {
                             gameIsRunning = false;
                             openModal(true);
-                        }else if(!textMessage.startsWith("/GameRequest")) {
+                        } else if (!textMessage.startsWith("/GameRequest")) {
                             Platform.runLater(() -> {
                                 addItem(listviewMessages, OPPONENT + ": " + textMessage);
                             });
                         }
                     }
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
                 try {
                     Thread.sleep(10);
-
                 } catch (InterruptedException ignored) {
-
                 }
             }
-
         });
         t.start();
     }

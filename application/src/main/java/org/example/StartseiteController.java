@@ -158,6 +158,8 @@ public class StartseiteController {
         try {
             String message = "/Accept " + otherPlayerId + " " + _clientService.getInstance(username).getClientId();
             _clientService.getInstance(this.username).sendText(message);
+            _clientService.getInstance(this.username).setLatestMessage(null);
+            activeMessage = null;
             OpenGameView();
         } catch (IOException e) {
             //TODO: Open error toast or something like that
@@ -186,25 +188,19 @@ public class StartseiteController {
     public synchronized void OpenGameView() throws IOException {
         Stage stage = (Stage) PlayersList.getScene().getWindow();
         FXMLLoader loader = new FXMLLoader(App.class.getResource("game.fxml"));
-        try {
-            Platform.runLater(() -> {
-                Scene scene = null;
-                try {
-                    scene = new Scene(loader.load());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                stage.setScene(scene);
-                GameController controller = loader.getController();
-                controller.setUsername(username);
-                controller.setOpponentId(opponentId);
-                stage.show();
-            });
-        } catch (Exception e) {
-            System.out.println((e.getMessage()));
-            System.out.println((e.getStackTrace()));
-        }
-
+        Platform.runLater(() -> {
+            Scene scene = null;
+            try {
+                scene = new Scene(loader.load());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            stage.setScene(scene);
+            GameController controller = loader.getController();
+            controller.setUsername(username);
+            controller.setOpponentId(opponentId);
+            stage.show();
+        });
     }
 
     @FXML
