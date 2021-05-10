@@ -12,38 +12,20 @@ public class Server {
     private static Server instance;
     private static final int PORT = 9995;
 
-    private ServerSocket server;
-    ServerThreadsManager serverThreadsManager = ServerThreadsManager.getInstance();
+    private final ServerSocket server;
     private Server() throws IOException {
         server = new ServerSocket(PORT);
     }
 
-    public void startListening() throws IOException, ClassNotFoundException {
-    /*
-        while (true) {
-            Socket socket = server.accept();
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-
-            String message = (String) ois.readObject();
-            System.out.println("Received message: " + message);
-
-
-            oos.writeObject("Echo: " + message);
-
-            ois.close();
-            oos.close();
-            socket.close();
-        }*/
-
+    public void startListening() throws IOException {
+        ServerThreadsManager.getInstance();
+        System.out.println("Awaiting connection...");
         while(true){
-            System.out.println("Awaiting connection...");
             Socket socket = server.accept();
             ServerThread newThread = new ServerThread(socket);
-            serverThreadsManager.serverThreads.add(newThread);
+            ServerThreadsManager.serverThreads.add(newThread);
             newThread.start();
         }
-
     }
 
 

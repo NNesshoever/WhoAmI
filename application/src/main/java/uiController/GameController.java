@@ -168,7 +168,7 @@ public class GameController {
         Thread t = new Thread(() -> {
             while (gameIsRunning) {
              try {
-                    String textMessage = ClientService.getInstance(this.username).getDis().readUTF();
+                    String textMessage = ClientService.getInstance(this.username).getObjectInputStream().readUTF();
                     if(textMessage.length()>0){
                         if(textMessage.startsWith(Commands.SEND_OPPONENT_LOST.value)){
                             gameIsRunning = false;

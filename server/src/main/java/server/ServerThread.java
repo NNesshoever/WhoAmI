@@ -3,6 +3,7 @@ package server;
 import client.ClientManager;
 import enums.Commands;
 import models.Client;
+import models.DataPayload;
 import models.Person;
 import utils.JsonService;
 
@@ -14,18 +15,20 @@ import java.util.Random;
 public class ServerThread extends Thread {
     private Socket socket;
     private int clientId = -1;
-    ServerThreadsManager serverThreadsManager = ServerThreadsManager.getInstance();
-    DataOutputStream writer;
+    private ServerThreadsManager serverThreadsManager = ServerThreadsManager.getInstance();
+    private ObjectOutputStream objectOutputStream;
+    private ObjectInputStream objectInputStream;
 
     public ServerThread(Socket clientSocket) throws IOException {
         this.socket = clientSocket;
     }
 
     public void run() {
-        DataInputStream reader;
+        DataInputStream dataInputStream;
         try {
-            reader = new DataInputStream(socket.getInputStream());
-            writer = new DataOutputStream(socket.getOutputStream());
+            dataInputStream = new DataInputStream(socket.getInputStream());
+            objectInputStream = new ObjectInputStream(socket.getInputStream());
+            objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
         } catch (IOException e) {
             return;
         }
@@ -34,36 +37,36 @@ public class ServerThread extends Thread {
             try {
                 if (clientId > 0) {
                 }
-                if (reader.available() > 0) {
-                    String message = reader.readUTF();
-                    if (message.isEmpty()) continue;
-                    if (message.startsWith(Commands.QUIT.action)) {
+                if (dataInputStream.available() > 0) {
+                    DataPayload dataPayload = (DataPayload) objectInputStream.readObject();
+                    if (dataPayload == null) continue;
+                    if (dataPayload.getCommand().startsWith(Commands.QUIT.action)) {
                         socket.close();
                         ClientManager.deleteClient(clientId);
                         return;
-                    } else if (message.startsWith(Commands.INIT_CLIENT.action)) {
-                        handleInitConnection(writer, message);
-                    } else if (message.startsWith(Commands.GET_CLIENT_LIST.action)) {
+                    } else if (dataPayload.getCommand().startsWith(Commands.INIT_CLIENT.action)) {
+                        handleInitConnection(objectOutputStream, dataPayload);
+                    } else if (dataPayload.getCommand().startsWith(Commands.GET_CLIENT_LIST.action)) {
                         sendClientList(new ObjectOutputStream(socket.getOutputStream()));
                         System.out.println("Liste gesendet");
-                    } else if (message.startsWith(Commands.GET_PERSON.action)) {
+                    } else if (dataPayload.getCommand().startsWith(Commands.GET_PERSON.action)) {
                         Person person = getRandomPerson();
                         sendPerson(new ObjectOutputStream(socket.getOutputStream()), person);
-                    } else if (message.startsWith(Commands.SEND_GAME_REQUEST.action)) {
-                        sendGameRequest(message);
+                    } else if (dataPayload.getCommand().startsWith(Commands.SEND_GAME_REQUEST.action)) {
+                        sendGameRequest(dataPayload.getCommand());
                         System.out.println("send game request");
-                    } else if (message.startsWith(Commands.ACCEPT_GAME_REQUEST.action)) {
-                        sendAcceptanceBack(message);
+                    } else if (dataPayload.getCommand().startsWith(Commands.ACCEPT_GAME_REQUEST.action)) {
+                        sendAcceptanceBack(dataPayload.getCommand());
                         System.out.println("send game acceptance");
-                    } else if (message.startsWith(Commands.SEND_TEXT_MESSAGE.action)) {
-                        sendMessage(message);
+                    } else if (dataPayload.getCommand().startsWith(Commands.SEND_TEXT_MESSAGE.action)) {
+                        sendMessage(dataPayload.getCommand());
                         System.out.println("Send Text Message");
-                    } else if (message.startsWith(Commands.SEND_OPPONENT_LOST.action)) {
-                        informOverVictory(message);
+                    } else if (dataPayload.getCommand().startsWith(Commands.SEND_OPPONENT_LOST.action)) {
+                        informOverVictory(dataPayload.getCommand());
                         System.out.println("informed opponent over victory");
                     } else {
-                        System.out.println("Received message from client" + clientId + ": " + message);
-                        ClientManager.addMessage(clientId, message);
+                        System.out.println("Received message from client" + clientId + ": " + dataPayload.getCommand());
+                        ClientManager.addMessage(clientId, dataPayload.getCommand());
                     }
                 }
 
@@ -72,6 +75,8 @@ public class ServerThread extends Thread {
             } catch (IOException e) {
                 e.printStackTrace();
                 return;
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
             try {
                 Thread.sleep(5);
@@ -94,7 +99,7 @@ public class ServerThread extends Thread {
         int recUserId = Integer.parseInt(textmessage.split(",")[2]);
 
         ServerThread recUserThread = ServerThreadsManager.getInstance().getThreadByClientID(recUserId);
-        DataOutputStream otherWriter = recUserThread.getWriter();
+        ObjectOutputStream otherWriter = recUserThread.getWriter();
         String message = Commands.RECEIVE_MESSAGE.action + " " + text;
 
         otherWriter.writeUTF(message);
@@ -108,21 +113,20 @@ public class ServerThread extends Thread {
         String opponentId = messageParts[2];
 
         ServerThread askedPlayerThread = ServerThreadsManager.getInstance().getThreadByClientID(winningPlayerId);
-        DataOutputStream otherWriter = askedPlayerThread.getWriter();
+        ObjectOutputStream otherWriter = askedPlayerThread.getWriter();
         String messagetoSend = Commands.SEND_OPPONENT_LOST.action + " " + winningPlayerId + " " + opponentId;
 
         otherWriter.writeUTF(messagetoSend);
         otherWriter.flush();
     }
 
-    private void handleInitConnection(DataOutputStream writer, String initMessage) throws IOException {
+    private void handleInitConnection(ObjectOutputStream objectOutputStream, DataPayload dataPayload) throws IOException {
         Client client = ClientManager.addClient();
-        client.setName(getNameFromInit(initMessage));
+        client.setName(dataPayload.getData().toString());
         clientId = client.getId();
-        String message = String.valueOf(clientId);
-        System.out.println("Client connected with Id:" + message);
-        writer.writeUTF(message);
-        writer.flush();
+        System.out.println("Client connected with Id:" + clientId);
+        objectOutputStream.writeObject(new DataPayload(Commands.REPLY_INIT_CLIENT.action, clientId));
+        objectOutputStream.flush();
     }
 
 
@@ -176,7 +180,7 @@ public class ServerThread extends Thread {
         int requestingPlayerId = Integer.parseInt(requestMessage.substring(secondWhiteSpace).trim());
 
         ServerThread askedPlayerThread = ServerThreadsManager.getInstance().getThreadByClientID(askedPlayerId);
-        DataOutputStream otherWriter = askedPlayerThread.getWriter();
+        ObjectOutputStream otherWriter = askedPlayerThread.getWriter();
         String message = Commands.SEND_GAME_REQUEST.action + " " + requestingPlayerId;
 
         otherWriter.writeUTF(message);
@@ -189,8 +193,8 @@ public class ServerThread extends Thread {
         String acceptingPlayerId = messageParts[2];
 
         ServerThread askedPlayerThread = ServerThreadsManager.getInstance().getThreadByClientID(requestPayerId);
-        DataOutputStream otherWriter = askedPlayerThread.getWriter();
-        String message = Commands.REPLY_SEND_GAME_REQUEST.action +" " + acceptingPlayerId;
+        ObjectOutputStream otherWriter = askedPlayerThread.getWriter();
+        String message = Commands.REPLY_SEND_GAME_REQUEST.action + " " + acceptingPlayerId;
 
         otherWriter.writeUTF(message);
         otherWriter.flush();
@@ -204,7 +208,7 @@ public class ServerThread extends Thread {
         return this.socket;
     }
 
-    public DataOutputStream getWriter() {
-        return this.writer;
+    public ObjectOutputStream getWriter() {
+        return this.objectOutputStream;
     }
 }

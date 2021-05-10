@@ -11,7 +11,8 @@ public enum Commands {
     ACCEPT_GAME_REQUEST("/Accept"),
     SEND_OPPONENT_LOST("/opponentLost"),
     SEND_TEXT_MESSAGE("/SendTextMessage"),
-    RECEIVE_MESSAGE("/recMessage");
+    RECEIVE_MESSAGE("/recMessage"),
+    REPLY_INIT_CLIENT("/ReplyInitClient");
 
     public final String action;
 

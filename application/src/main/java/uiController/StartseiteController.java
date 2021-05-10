@@ -80,7 +80,7 @@ public class StartseiteController {
         Thread t = new Thread(() -> {
             while (true) {
                 try {
-                    String commandMessage = ClientService.getInstance(this.username).getDis().readUTF();
+                    String commandMessage = ClientService.getInstance(this.username).getObjectInputStream().readUTF();
                     if (commandMessage.startsWith(Commands.SEND_GAME_REQUEST.value)) {
                         opponentId = Integer.parseInt(commandMessage.split(" ")[1]);
                         displayRequest();
@@ -159,7 +159,7 @@ public class StartseiteController {
         try {
             String message = "/Decline " + otherPlayerId + " " + _clientService.getInstance(username).getClientId();
             _clientService.getInstance(this.username).sendText(message);
-            _clientService.getInstance(this.username).setLatestMessage(null);
+            _clientService.getInstance(this.username).setPayload(null);
             this.message = null;
 
         } catch (IOException e) {
