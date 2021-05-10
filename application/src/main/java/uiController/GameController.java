@@ -1,4 +1,4 @@
-package org.example;
+package uiController;
 
 import Dtos.PersonDto;
 import javafx.application.Platform;
@@ -13,12 +13,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import services.ClientService;
+import startApp.App;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GameController {
     private final String OPPONENT = "Mitspieler";

@@ -3,6 +3,7 @@ package server;
 import Dtos.PersonDto;
 import Dtos.UserDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import utils.ImagePathConverter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,10 +21,16 @@ public class JsonService {
 
         try {
             List<PersonDto> dto = Arrays.asList(json.readValue(is, PersonDto[].class));
+            fillBaseString(dto);
             return dto;
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
+    }
+    private static void fillBaseString(List<PersonDto> persons){
+        for (PersonDto person: persons){
+            person.setBase64Image(ImagePathConverter.ImagePathToBaseString(person.getImagePath()));
+        }
     }
 }

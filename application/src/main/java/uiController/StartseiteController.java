@@ -1,4 +1,4 @@
-package org.example;
+package uiController;
 
 import Dtos.UserDto;
 import javafx.application.Platform;
@@ -14,6 +14,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import services.ClientService;
+import startApp.App;
 
 import java.io.IOException;
 import java.util.ArrayList;

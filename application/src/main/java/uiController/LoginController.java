@@ -1,4 +1,4 @@
-package org.example;
+package uiController;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,6 +10,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import services.ClientService;
+import startApp.App;
 
 import java.io.IOException;
 

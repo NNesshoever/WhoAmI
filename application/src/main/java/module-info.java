@@ -1,10 +1,9 @@
-module org.example {
+module startApp {
     requires javafx.controls;
     requires javafx.fxml;
     requires com.fasterxml.jackson.databind;
 
-    opens org.example to javafx.fxml;
-    exports org.example;
+    opens uiController to javafx.fxml;
+    exports startApp;
     exports Dtos;
-    exports server;
 }

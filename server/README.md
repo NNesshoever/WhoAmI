@@ -1,2 +1,3 @@
-# SERVER
-ServerSocket
+# server.Application
+
+ClientSocket
