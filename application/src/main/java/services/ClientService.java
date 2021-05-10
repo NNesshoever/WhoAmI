@@ -1,6 +1,7 @@
 package services;
 
 
+import enums.Commands;
 import models.Person;
 import models.User;
 
@@ -24,10 +25,35 @@ public class ClientService {
     private static ClientService instance;
     private static ClientService single_instance = null;
 
+
+    public DataOutputStream getDos() {
+        return dos;
+    }
+
+    public void setDos(DataOutputStream dos) {
+        this.dos = dos;
+    }
+
+    public DataInputStream getDis() {
+        return dis;
+    }
+
+    public void setDis(DataInputStream dis) {
+        this.dis = dis;
+    }
+
+    public ObjectInputStream getDisObject() {
+        return disObject;
+    }
+
+    public void setDisObject(ObjectInputStream disObject) {
+        this.disObject = disObject;
+    }
+
     private ClientService(String username) throws IOException {
         socket = new Socket(InetAddress.getLocalHost().getHostName(), PORT);
         dos = new DataOutputStream(socket.getOutputStream());
-        dos.writeUTF("/InitClient,"+ username);
+        dos.writeUTF("/InitClient," + username);
         dos.flush();
         dis = new DataInputStream(socket.getInputStream());
         String id = dis.readUTF();
@@ -60,7 +86,7 @@ public class ClientService {
         ClientService.latestTextMessage = latestTextMessage;
     }
 
-    public static String getLatestMessage(){
+    public static String getLatestMessage() {
         return latestMessage;
     }
 
@@ -83,18 +109,19 @@ public class ClientService {
 
     public void read() {
         Thread t = new Thread(() -> {
-            if(!ReadIsRunning) {
+            if (!ReadIsRunning) {
                 while (ContinueRead) {
                     ReadIsRunning = true;
                     try {
                         if (dis.available() > 0) {
                             latestMessage = dis.readUTF();
-                            if(latestMessage.startsWith("/Accept") || latestMessage.startsWith("/recMessage") ||latestMessage.startsWith("/opponentLost")){
+                            System.out.println(latestMessage);
+                            if (latestMessage.startsWith("/Accept") || latestMessage.startsWith(Commands.REPLY_SEND_GAME_REQUEST.value) || latestMessage.startsWith("/recMessage") || latestMessage.startsWith("/opponentLost")) {
                                 System.out.println(latestMessage);
-                                if(latestMessage.startsWith("/opponentLost")) {
+                                if (latestMessage.startsWith("/opponentLost")) {
                                     latestTextMessage = latestMessage;
-                                }else {
-                                    int messageKey = latestMessage.split(" ")[0].length()+1;
+                                } else {
+                                    int messageKey = latestMessage.split(" ")[0].length() + 1;
                                     latestTextMessage = latestMessage.substring(messageKey);
                                 }
                             }
@@ -114,11 +141,11 @@ public class ClientService {
         t.start();
     }
 
-    public static void setInstance(){
+    public static void setInstance() {
         single_instance = null;
     }
 
-    public ArrayList<User> getClientList(){
+    public ArrayList<User> getClientList() {
         ArrayList<User> users = null;
         try {
             ContinueRead = false;
@@ -134,23 +161,22 @@ public class ClientService {
         return users;
     }
 
-    public Person getPerson(){
+    public Person getPerson() {
         Person Person = null;
-        try{
+        try {
             ContinueRead = false;
             dos.writeUTF("/GetPerson");
             dos.flush();
             disObject = new ObjectInputStream(socket.getInputStream());
             Person = (models.Person) disObject.readObject();
             ContinueRead = true;
-            read();
-        }catch(IOException | ClassNotFoundException e){
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return Person;
     }
 
-    public int getClientId(){
+    public int getClientId() {
         return this.clientId;
     }
 

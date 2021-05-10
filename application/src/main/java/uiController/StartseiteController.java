@@ -1,5 +1,6 @@
 package uiController;
 
+import enums.Commands;
 import models.User;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -30,27 +31,17 @@ public class StartseiteController {
     private ClientService _clientService;
     private String username = "";
     private int opponentId;
-    private String activeMessage;
+    private String message;
     private String messageToShow;
 
-
-    public StartseiteController() {
-        //TODO: usernameTextField gibt es nicht
-//        try {
-//            String textValue = usernameTextField.getText();
-//            _clientService = ClientService.getInstance(textValue);
-//        }
-//        catch (IOException e){//TODO: Open error Toast
-//        }
-    }
 
     @FXML
     public void initialize() {
         usersList = FXCollections.observableArrayList();
         PlayersList.setItems(usersList);
         loadClientList();
-        activeMessage = null;
-        setActiveMessage();
+        message = null;
+        startThread();
     }
 
     public void setUsername(String username) {
@@ -75,7 +66,7 @@ public class StartseiteController {
 
     public void SendGameRequest(MouseEvent mouseEvent) throws IOException {
         if (PlayersList.getSelectionModel().getSelectedItem() != null) {
-            String message = "/GameRequest " + PlayersList.getSelectionModel().getSelectedItem().getId() + " " + _clientService.getInstance(this.username).getClientId();
+            String message = Commands.SEND_GAME_REQUEST.value + " " + PlayersList.getSelectionModel().getSelectedItem().getId() + " " + _clientService.getInstance(this.username).getClientId();
             opponentId = PlayersList.getSelectionModel().getSelectedItem().getId();
             try {
                 _clientService.getInstance(this.username).sendText(message);
@@ -85,19 +76,17 @@ public class StartseiteController {
         }
     }
 
-    public void setActiveMessage() {
+    public void startThread() {
         Thread t = new Thread(() -> {
             while (true) {
                 try {
-                    if (activeMessage == null) {
-                        activeMessage = _clientService.getInstance(this.username).getLatestMessage();
-                        if (activeMessage.startsWith("/GameRequest")) {
-                            opponentId = Integer.parseInt(activeMessage.split(" ")[1]);
-                            displayRequest();
-                        } else if (activeMessage.startsWith("/Accept")) {
-                            opponentId = Integer.parseInt(activeMessage.split(" ")[1]);
-                            OpenGameView();
-                        }
+                    String commandMessage = ClientService.getInstance(this.username).getDis().readUTF();
+                    if (commandMessage.startsWith(Commands.SEND_GAME_REQUEST.value)) {
+                        opponentId = Integer.parseInt(commandMessage.split(" ")[1]);
+                        displayRequest();
+                    } else if (commandMessage.startsWith(Commands.REPLY_SEND_GAME_REQUEST.value)) {
+                        opponentId = Integer.parseInt(commandMessage.split(" ")[1]);
+                        OpenGameView();
                     }
 
                 } catch (Exception e) {
@@ -108,7 +97,6 @@ public class StartseiteController {
 
                 }
             }
-
         });
         t.start();
     }
@@ -140,15 +128,15 @@ public class StartseiteController {
     }
 
     public String prepareMessage() {
-        String actualMessage = activeMessage.substring(0, activeMessage.lastIndexOf(" "));
-        String playerId = activeMessage.substring(activeMessage.lastIndexOf(" "));
+        String actualMessage = message.substring(0, message.lastIndexOf(" "));
+        String playerId = message.substring(message.lastIndexOf(" "));
 
         switch (actualMessage) {
             case "/GameRequest":
                 messageToShow = "You got a game request from " + playerId + ". Do you accept?";
                 break;
             default:
-                activeMessage = null;
+                message = null;
         }
 
         return messageToShow;
@@ -157,7 +145,7 @@ public class StartseiteController {
     public void AcceptRequest() {
         String otherPlayerId = splitMessage();
         try {
-            String message = "/Accept " + otherPlayerId + " " + _clientService.getInstance(username).getClientId();
+            String message = Commands.ACCEPT_GAME_REQUEST.value + " " + otherPlayerId + " " + _clientService.getInstance(username).getClientId();
             _clientService.getInstance(this.username).sendText(message);
             OpenGameView();
         } catch (IOException e) {
@@ -172,7 +160,7 @@ public class StartseiteController {
             String message = "/Decline " + otherPlayerId + " " + _clientService.getInstance(username).getClientId();
             _clientService.getInstance(this.username).sendText(message);
             _clientService.getInstance(this.username).setLatestMessage(null);
-            activeMessage = null;
+            this.message = null;
 
         } catch (IOException e) {
             //TODO: Open error toast or something like that
@@ -210,7 +198,7 @@ public class StartseiteController {
 
     @FXML
     public void LogoutUser() throws IOException {
-        String message = "/Quit";
+        String message = Commands.QUIT.value;
         ClientService.setInstance();
         client.sendText(message);
         try {

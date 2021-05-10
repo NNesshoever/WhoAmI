@@ -1,5 +1,6 @@
 package uiController;
 
+import enums.Commands;
 import models.Person;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -148,7 +149,7 @@ public class GameController {
 
     public void sendMessageToServer(String userMessage) {
         try {
-            String message = "/SendTextMessage," + userMessage + "," + opponentId;
+            String message = Commands.SEND_TEXT_MESSAGE.value + "," + userMessage + "," + opponentId;
             _clientService.getInstance(this.username).sendText(message);
         } catch (IOException e) {
             //TODO: Open error toast or something like that
@@ -166,19 +167,20 @@ public class GameController {
     public void setActiveMessage() {
         Thread t = new Thread(() -> {
             while (gameIsRunning) {
-                try {
-                    String textMessage = _clientService.getInstance(this.username).getLatestTextMessage();
+             try {
+                    String textMessage = ClientService.getInstance(this.username).getDis().readUTF();
                     if(textMessage.length()>0){
-                        if(textMessage.startsWith("/opponentLost")){
+                        if(textMessage.startsWith(Commands.SEND_OPPONENT_LOST.value)){
                             gameIsRunning = false;
                             openModal(true);
-                        }else if(!textMessage.startsWith("/GameRequest")) {
+                        }else if(!textMessage.startsWith(Commands.SEND_GAME_REQUEST.value)) {
                             Platform.runLater(() -> {
                                 addItem(listviewMessages, OPPONENT + ": " + textMessage);
                             });
                         }
                     }
                 } catch (Exception e) {
+                 e.printStackTrace();
                 }
                 try {
                     Thread.sleep(10);
