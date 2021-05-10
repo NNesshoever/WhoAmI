@@ -1,4 +1,4 @@
-import Dtos.PersonDto;
+import dtos.PersonDto;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import server.JsonService;

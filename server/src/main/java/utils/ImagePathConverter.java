@@ -1,8 +1,5 @@
 package utils;
 
-import Dtos.PersonDto;
-import server.Application;
-
 import java.io.IOException;
 import java.util.Base64;
 

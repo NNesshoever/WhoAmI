@@ -1,7 +1,6 @@
 package server;
 
-import Dtos.PersonDto;
-import Dtos.UserDto;
+import dtos.PersonDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import utils.ImagePathConverter;
 

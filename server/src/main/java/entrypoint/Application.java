@@ -1,4 +1,6 @@
-package server;
+package entrypoint;
+
+import server.Server;
 
 import java.io.IOException;
 

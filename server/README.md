@@ -1,3 +1,3 @@
-# server.Application
+# entrypoint.Application
 
 ClientSocket

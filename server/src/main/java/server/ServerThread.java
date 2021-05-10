@@ -1,6 +1,6 @@
 package server;
 
-import Dtos.PersonDto;
+import dtos.PersonDto;
 
 import java.io.*;
 import java.net.Socket;

@@ -1,7 +1,7 @@
 package server;
 
 
-import Dtos.UserDto;
+import dtos.UserDto;
 
 import java.util.*;
 

@@ -1,6 +1,6 @@
 package uiController;
 
-import Dtos.PersonDto;
+import dtos.PersonDto;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,7 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import services.ClientService;
-import startApp.App;
+import entrypoint.App;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

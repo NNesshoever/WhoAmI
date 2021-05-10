@@ -1,6 +1,6 @@
 package uiController;
 
-import Dtos.UserDto;
+import dtos.UserDto;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,7 +14,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import services.ClientService;
-import startApp.App;
+import entrypoint.App;
 
 import java.io.IOException;
 import java.util.ArrayList;

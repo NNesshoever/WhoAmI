@@ -1,13 +1,9 @@
-package Dtos;
+package dtos;
 
-import server.Application;
-
-import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
-import java.util.Base64;
 
 public class PersonDto implements Serializable {
 
@@ -32,6 +28,7 @@ public class PersonDto implements Serializable {
     private String gender;
 
     public PersonDto() {
+
     }
 
     public PersonDto(int id, String imagePath, String surname, String lastname, String birthdate, String height, String hairColor, String eyeColor, String job, ArrayList<String> accessories, ArrayList<String> personality, String relationship, String nationality, ArrayList<String> production, String gender) {
@@ -50,8 +47,6 @@ public class PersonDto implements Serializable {
         this.nationality = nationality;
         this.production = production;
         this.gender = gender;
-
-        setCalculatedAge();
     }
 
 

@@ -1,4 +1,4 @@
-package startApp;
+package entrypoint;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
