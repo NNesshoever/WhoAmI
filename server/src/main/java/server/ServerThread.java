@@ -1,6 +1,7 @@
 package server;
 
 import client.ClientManager;
+import enums.Commands;
 import models.Client;
 import models.Person;
 import utils.JsonService;
@@ -32,37 +33,35 @@ public class ServerThread extends Thread {
         while (true) {
             try {
                 if (clientId > 0) {
-                   // handleMessages(writer);
                 }
                 if (reader.available() > 0) {
                     String message = reader.readUTF();
                     if (message.isEmpty()) continue;
-
-                    if (message.startsWith("/Quit")) {
+                    if (message.startsWith(Commands.QUIT.action)) {
                         socket.close();
                         ClientManager.deleteClient(clientId);
                         return;
-                    } else if (message.startsWith("/InitClient")) {
+                    } else if (message.startsWith(Commands.INIT_CLIENT.action)) {
                         handleInitConnection(writer, message);
-                    } else if (message.startsWith("/getClientList")) {
+                    } else if (message.startsWith(Commands.GET_CLIENT_LIST.action)) {
                         sendClientList(new ObjectOutputStream(socket.getOutputStream()));
                         System.out.println("Liste gesendet");
-                    }else if(message.startsWith("/GetPerson")){
-                        Person person  = getRandomPerson();
+                    } else if (message.startsWith(Commands.GET_PERSON.action)) {
+                        Person person = getRandomPerson();
                         sendPerson(new ObjectOutputStream(socket.getOutputStream()), person);
-                    }else if (message.startsWith("/GameRequest")) {
+                    } else if (message.startsWith(Commands.SEND_GAME_REQUEST.action)) {
                         sendGameRequest(message);
                         System.out.println("send game request");
-                    } else if (message.startsWith("/Accept")) {
+                    } else if (message.startsWith(Commands.ACCEPT_GAME_REQUEST.action)) {
                         sendAcceptanceBack(message);
                         System.out.println("send game acceptance");
-                    } else if (message.startsWith("/SendTextMessage")) {
+                    } else if (message.startsWith(Commands.SEND_TEXT_MESSAGE.action)) {
                         sendMessage(message);
                         System.out.println("Send Text Message");
-                    } else if (message.startsWith("/opponentLost")) {
+                    } else if (message.startsWith(Commands.SEND_OPPONENT_LOST.action)) {
                         informOverVictory(message);
                         System.out.println("informed opponent over victory");
-                    }else {
+                    } else {
                         System.out.println("Received message from client" + clientId + ": " + message);
                         ClientManager.addMessage(clientId, message);
                     }
@@ -96,7 +95,7 @@ public class ServerThread extends Thread {
 
         ServerThread recUserThread = ServerThreadsManager.getInstance().getThreadByClientID(recUserId);
         DataOutputStream otherWriter = recUserThread.getWriter();
-        String message = "/recMessage " + text;
+        String message = Commands.RECEIVE_MESSAGE.action + " " + text;
 
         otherWriter.writeUTF(message);
         otherWriter.flush();
@@ -110,7 +109,7 @@ public class ServerThread extends Thread {
 
         ServerThread askedPlayerThread = ServerThreadsManager.getInstance().getThreadByClientID(winningPlayerId);
         DataOutputStream otherWriter = askedPlayerThread.getWriter();
-        String messagetoSend = "/opponentLost " + winningPlayerId + " " + opponentId;
+        String messagetoSend = Commands.SEND_OPPONENT_LOST.action + " " + winningPlayerId + " " + opponentId;
 
         otherWriter.writeUTF(messagetoSend);
         otherWriter.flush();
@@ -127,7 +126,7 @@ public class ServerThread extends Thread {
     }
 
 
-    private Person getRandomPerson(){
+    private Person getRandomPerson() {
         List<Person> Persons = JsonService.loadJson();
         Random rnd = new Random();
         int max = Persons.size();
@@ -137,11 +136,11 @@ public class ServerThread extends Thread {
         String SeedString = String.valueOf(seed);
         int i = 0;
         int temp = 0;
-        do{
+        do {
             temp = Character.digit(SeedString.charAt(i), 10);
             ++i;
 
-        }while(temp > max-1 && temp > 0 && i <= SeedString.length());
+        } while (temp > max - 1 && temp > 0 && i <= SeedString.length());
         Person returnPerson = new Person();
         returnPerson = Persons.get(temp);
         return returnPerson;
@@ -151,7 +150,7 @@ public class ServerThread extends Thread {
         return init.split(",")[1];
     }
 
-    private void sendClientList(ObjectOutputStream writer){
+    private void sendClientList(ObjectOutputStream writer) {
         try {
             writer.writeObject(ClientManager.getClients());
             writer.flush();
@@ -160,14 +159,15 @@ public class ServerThread extends Thread {
         }
     }
 
-    private void sendPerson(ObjectOutputStream writer, Person person){
-        try{
+    private void sendPerson(ObjectOutputStream writer, Person person) {
+        try {
             writer.writeObject(person);
             writer.flush();
-        }catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     private void sendGameRequest(String requestMessage) throws IOException {
         int firstWhiteSpace = requestMessage.indexOf(" ");
         int secondWhiteSpace = requestMessage.lastIndexOf(" ");
@@ -177,7 +177,7 @@ public class ServerThread extends Thread {
 
         ServerThread askedPlayerThread = ServerThreadsManager.getInstance().getThreadByClientID(askedPlayerId);
         DataOutputStream otherWriter = askedPlayerThread.getWriter();
-        String message = "/GameRequest " + requestingPlayerId;
+        String message = Commands.SEND_GAME_REQUEST.action + " " + requestingPlayerId;
 
         otherWriter.writeUTF(message);
         otherWriter.flush();
@@ -190,19 +190,21 @@ public class ServerThread extends Thread {
 
         ServerThread askedPlayerThread = ServerThreadsManager.getInstance().getThreadByClientID(requestPayerId);
         DataOutputStream otherWriter = askedPlayerThread.getWriter();
-        String message = "/Accepted " + acceptingPlayerId;
+        String message = Commands.REPLY_SEND_GAME_REQUEST.action +" " + acceptingPlayerId;
 
         otherWriter.writeUTF(message);
         otherWriter.flush();
     }
 
-    public int getClientId(){
-        return  this.clientId;
+    public int getClientId() {
+        return this.clientId;
     }
 
-    public Socket getSocket(){
+    public Socket getSocket() {
         return this.socket;
     }
 
-    public DataOutputStream getWriter() {return this.writer;}
+    public DataOutputStream getWriter() {
+        return this.writer;
+    }
 }
