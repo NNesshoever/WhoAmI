@@ -13,3 +13,4 @@ application/.idea
 server/.idea
 .idea
 application/WhoAmI.iml
+server/WhoAmI.iml
