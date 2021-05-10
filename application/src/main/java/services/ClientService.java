@@ -1,8 +1,8 @@
 package services;
 
 
-import dtos.PersonDto;
-import dtos.UserDto;
+import models.Person;
+import models.User;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -118,30 +118,30 @@ public class ClientService {
         single_instance = null;
     }
 
-    public ArrayList<UserDto> getClientList(){
-        ArrayList<UserDto> userDtos = null;
+    public ArrayList<User> getClientList(){
+        ArrayList<User> users = null;
         try {
             ContinueRead = false;
             dos.writeUTF("/getClientList");
             dos.flush();
             disObject = new ObjectInputStream(socket.getInputStream());
-            userDtos = (ArrayList<UserDto>) disObject.readObject();
+            users = (ArrayList<User>) disObject.readObject();
             ContinueRead = true;
             read();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return userDtos;
+        return users;
     }
 
-    public PersonDto getPerson(){
-        PersonDto Person = null;
+    public Person getPerson(){
+        Person Person = null;
         try{
             ContinueRead = false;
             dos.writeUTF("/GetPerson");
             dos.flush();
             disObject = new ObjectInputStream(socket.getInputStream());
-            Person = (PersonDto) disObject.readObject();
+            Person = (models.Person) disObject.readObject();
             ContinueRead = true;
             read();
         }catch(IOException | ClassNotFoundException e){

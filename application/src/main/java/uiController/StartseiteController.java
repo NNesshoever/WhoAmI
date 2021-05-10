@@ -1,6 +1,6 @@
 package uiController;
 
-import dtos.UserDto;
+import models.User;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,12 +20,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class StartseiteController {
-    ObservableList<UserDto> usersList;
+    ObservableList<User> usersList;
 
     ClientService client;
 
     @FXML
-    ListView<UserDto> PlayersList;
+    ListView<User> PlayersList;
 
     private ClientService _clientService;
     private String username = "";
@@ -60,7 +60,7 @@ public class StartseiteController {
     public void loadClientList() {
         try {
             client = ClientService.getInstance(this.username);
-            ArrayList<UserDto> users = client.getClientList();
+            ArrayList<User> users = client.getClientList();
             users.removeIf((clientDto) -> clientDto.getId() == client.getClientId());
             usersList.setAll(users);
         } catch (IOException e) {

@@ -1,8 +1,7 @@
-package server;
+package utils;
 
-import dtos.PersonDto;
+import models.Person;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import utils.ImagePathConverter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,13 +12,13 @@ public class JsonService {
 
     private static final String FILE_NAME = "peoples.json";
 
-    public static List<PersonDto> loadJson() {
+    public static List<Person> loadJson() {
         ObjectMapper json = new ObjectMapper();
         ClassLoader classLoader = JsonService.class.getClassLoader();
         InputStream is = classLoader.getResourceAsStream(FILE_NAME);
 
         try {
-            List<PersonDto> dto = Arrays.asList(json.readValue(is, PersonDto[].class));
+            List<Person> dto = Arrays.asList(json.readValue(is, Person[].class));
             fillBaseString(dto);
             return dto;
         } catch (IOException e) {
@@ -27,8 +26,8 @@ public class JsonService {
         }
         return null;
     }
-    private static void fillBaseString(List<PersonDto> persons){
-        for (PersonDto person: persons){
+    private static void fillBaseString(List<Person> persons){
+        for (Person person: persons){
             person.setBase64Image(ImagePathConverter.ImagePathToBaseString(person.getImagePath()));
         }
     }

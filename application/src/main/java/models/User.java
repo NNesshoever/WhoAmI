@@ -1,16 +1,16 @@
-package dtos;
+package models;
 
 import java.io.Serializable;
 
-public class UserDto implements Serializable {
+public class User implements Serializable {
     private int id;
     private String name;
 
-    public UserDto(int id, String name) {
+    public User(int id, String name) {
         this.id = id;
         this.name = name;
     }
-    public UserDto(){}
+    public User(){}
 
     public int getId() {
         return id;

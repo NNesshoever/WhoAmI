@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class ServerThreadsManager {
     private static ServerThreadsManager instance;
-    static ArrayList<ServerThread> serverThreads = new ArrayList<ServerThread>();
+    public static ArrayList<ServerThread> serverThreads = new ArrayList<ServerThread>();
 
     public static ServerThreadsManager getInstance() throws IOException {
         if (instance == null) {

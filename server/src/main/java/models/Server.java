@@ -1,9 +1,11 @@
-package server;
+package models;
+
+import server.ServerThread;
+import server.ServerThreadsManager;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 
 public class Server {
 

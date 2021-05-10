@@ -1,11 +1,11 @@
-package dtos;
+package models;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 
-public class PersonDto implements Serializable {
+public class Person implements Serializable {
 
     private static final long serialVersionUID = 6529685098267757690L;
 
@@ -27,10 +27,11 @@ public class PersonDto implements Serializable {
     private ArrayList<String> production = new ArrayList<>();
     private String gender;
 
-    public PersonDto() {
+    public Person() {
+
     }
 
-    public PersonDto(int id, String imagePath, String surname, String lastname, String birthdate, String height, String hairColor, String eyeColor, String job, ArrayList<String> accessories, ArrayList<String> personality, String relationship, String nationality, ArrayList<String> production, String gender) {
+    public Person(int id, String imagePath, String surname, String lastname, String birthdate, String height, String hairColor, String eyeColor, String job, ArrayList<String> accessories, ArrayList<String> personality, String relationship, String nationality, ArrayList<String> production, String gender) {
         this.id = id;
         this.imagePath = imagePath;
         this.surname = surname;
@@ -46,8 +47,6 @@ public class PersonDto implements Serializable {
         this.nationality = nationality;
         this.production = production;
         this.gender = gender;
-
-        setCalculatedAge();
     }
 
 

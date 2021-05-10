@@ -1,7 +1,8 @@
-package server;
+package client;
 
 
-import dtos.UserDto;
+import models.Client;
+import models.User;
 
 import java.util.*;
 
@@ -10,11 +11,11 @@ public class ClientManager {
     private static int lastId = 0;
     private Iterator<Client> i;
 
-    public static synchronized ArrayList<UserDto> getClients(){
-    ArrayList<UserDto> clientDtos = new ArrayList<>();
+    public static synchronized ArrayList<User> getClients(){
+    ArrayList<User> clientDtos = new ArrayList<>();
 
       for(Client client : clients){
-          clientDtos.add(new UserDto(client.getId(),client.getName()));
+          clientDtos.add(new User(client.getId(),client.getName()));
       }
         return clientDtos;
     }

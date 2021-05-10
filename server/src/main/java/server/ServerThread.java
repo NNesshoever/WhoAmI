@@ -1,6 +1,9 @@
 package server;
 
-import dtos.PersonDto;
+import client.ClientManager;
+import models.Client;
+import models.Person;
+import utils.JsonService;
 
 import java.io.*;
 import java.net.Socket;
@@ -45,7 +48,7 @@ public class ServerThread extends Thread {
                         sendClientList(new ObjectOutputStream(socket.getOutputStream()));
                         System.out.println("Liste gesendet");
                     }else if(message.startsWith("/GetPerson")){
-                        PersonDto person  = getRandomPerson();
+                        Person person  = getRandomPerson();
                         sendPerson(new ObjectOutputStream(socket.getOutputStream()), person);
                     }else if (message.startsWith("/GameRequest")) {
                         sendGameRequest(message);
@@ -124,8 +127,8 @@ public class ServerThread extends Thread {
     }
 
 
-    private PersonDto getRandomPerson(){
-        List<PersonDto> Persons = JsonService.loadJson();
+    private Person getRandomPerson(){
+        List<Person> Persons = JsonService.loadJson();
         Random rnd = new Random();
         int max = Persons.size();
         long seed = System.nanoTime();
@@ -139,7 +142,7 @@ public class ServerThread extends Thread {
             ++i;
 
         }while(temp > max-1 && temp > 0 && i <= SeedString.length());
-        PersonDto returnPerson = new PersonDto();
+        Person returnPerson = new Person();
         returnPerson = Persons.get(temp);
         return returnPerson;
     }
@@ -157,7 +160,7 @@ public class ServerThread extends Thread {
         }
     }
 
-    private void sendPerson(ObjectOutputStream writer, PersonDto person){
+    private void sendPerson(ObjectOutputStream writer, Person person){
         try{
             writer.writeObject(person);
             writer.flush();

@@ -1,6 +1,6 @@
 package entrypoint;
 
-import server.Server;
+import models.Server;
 
 import java.io.IOException;
 

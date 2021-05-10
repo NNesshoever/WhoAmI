@@ -5,5 +5,5 @@ module entrypoint {
 
     opens uiController to javafx.fxml;
     exports entrypoint;
-    exports dtos;
+    exports models;
 }
