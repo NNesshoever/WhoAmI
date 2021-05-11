@@ -21,7 +21,7 @@ public class GameSessionManager {
     public static synchronized GameSession getGameSession(int clientId) {
         Optional<GameSession> optionalGameSession = sessions.stream().filter(
                 session -> session.getClient().getId() == clientId
-                || session.getOpponentClient().getId() == clientId).findFirst();
+                        || session.getOpponentClient().getId() == clientId).findFirst();
         return optionalGameSession.orElse(null);
     }
 
@@ -39,7 +39,11 @@ public class GameSessionManager {
         sessions.set(index, gameSession);
     }
 
-    public static synchronized int getOtherId(GameSession gameSession, int clientId){
-        return clientId == gameSession.getClient().getId() ? gameSession.getOpponentClient().getId() : clientId;
+    public static synchronized int getOtherId(GameSession gameSession, int clientId) {
+        if (clientId == gameSession.getClient().getId()) {
+            return gameSession.getOpponentClient().getId();
+        } else {
+            return gameSession.getClient().getId();
+        }
     }
 }
