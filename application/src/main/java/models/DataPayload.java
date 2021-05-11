@@ -3,6 +3,8 @@ package models;
 import java.io.Serializable;
 
 public class DataPayload implements Serializable {
+    private static final long serialVersionUID = -5018457037696844853L;
+
     private String command;
     private String dataType;
     private Object data;
