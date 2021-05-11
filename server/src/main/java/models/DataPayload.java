@@ -41,6 +41,7 @@ public class DataPayload implements Serializable {
         return "DataPayload{" +
                 "command='" + command + '\'' +
                 ", data=" + Arrays.toString(data) +
+                ", plainData=" + plainData +
                 '}';
     }
 }
