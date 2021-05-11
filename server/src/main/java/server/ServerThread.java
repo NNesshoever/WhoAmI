@@ -1,10 +1,14 @@
 package server;
 
-import client.ClientManager;
+import managers.ClientManager;
 import enums.Commands;
+import enums.GameStates;
+import managers.GameSessionManager;
 import models.Client;
 import models.DataPayload;
+import models.GameSession;
 import models.Person;
+import org.apache.log4j.Logger;
 import utils.JsonService;
 
 import java.io.*;
@@ -13,8 +17,10 @@ import java.util.List;
 import java.util.Random;
 
 public class ServerThread extends Thread {
+    protected static final Logger LOGGER = Logger.getLogger(ServerThread.class);
     private Socket socket;
-    private int clientId = -1;
+    private Client client;
+
     private ServerThreadsManager serverThreadsManager = ServerThreadsManager.getInstance();
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
@@ -35,38 +41,38 @@ public class ServerThread extends Thread {
 
         while (true) {
             try {
-                if (clientId > 0) {
-                }
                 if (dataInputStream.available() > 0) {
                     DataPayload dataPayload = (DataPayload) objectInputStream.readObject();
+                    LOGGER.info(dataPayload);
+
                     if (dataPayload == null) continue;
-                    if (dataPayload.getCommand().startsWith(Commands.QUIT.action)) {
+                    if (dataPayload.getCommand().equals(Commands.SEND_LOGOUT.value)) {
+                        // TODO: Fix Logout error
                         socket.close();
-                        ClientManager.deleteClient(clientId);
+                        ClientManager.deleteClient(client.getId());
                         return;
-                    } else if (dataPayload.getCommand().startsWith(Commands.INIT_CLIENT.action)) {
-                        handleInitConnection(objectOutputStream, dataPayload);
-                    } else if (dataPayload.getCommand().startsWith(Commands.GET_CLIENT_LIST.action)) {
-                        sendClientList(new ObjectOutputStream(socket.getOutputStream()));
+                    } else if (dataPayload.getCommand().equals(Commands.SEND_LOGIN.value)) {
+                        handleInitConnection(dataPayload);
+                    } else if (dataPayload.getCommand().equals(Commands.GET_CLIENT_LIST.value)) {
+                        sendClientList();
                         System.out.println("Liste gesendet");
-                    } else if (dataPayload.getCommand().startsWith(Commands.GET_PERSON.action)) {
+                    } else if (dataPayload.getCommand().equals(Commands.GET_PERSON.value)) {
                         Person person = getRandomPerson();
-                        sendPerson(new ObjectOutputStream(socket.getOutputStream()), person);
-                    } else if (dataPayload.getCommand().startsWith(Commands.SEND_GAME_REQUEST.action)) {
-                        sendGameRequest(dataPayload.getCommand());
+                        sendPerson(person);
+                    } else if (dataPayload.getCommand().equals(Commands.SEND_GAME_REQUEST.value)) {
+                        forwardGameRequest(dataPayload);
                         System.out.println("send game request");
-                    } else if (dataPayload.getCommand().startsWith(Commands.ACCEPT_GAME_REQUEST.action)) {
-                        sendAcceptanceBack(dataPayload.getCommand());
+                    } else if (dataPayload.getCommand().equals(Commands.SEND_RESPONSE_GAME_REQUEST.value)) {
+                        sendResponseGameRequest(dataPayload);
                         System.out.println("send game acceptance");
-                    } else if (dataPayload.getCommand().startsWith(Commands.SEND_TEXT_MESSAGE.action)) {
-                        sendMessage(dataPayload.getCommand());
+                    } else if (dataPayload.getCommand().equals(Commands.SEND_TEXT_MESSAGE.value)) {
+                        sendMessage(dataPayload);
                         System.out.println("Send Text Message");
-                    } else if (dataPayload.getCommand().startsWith(Commands.SEND_OPPONENT_LOST.action)) {
+                    } else if (dataPayload.getCommand().equals(Commands.SEND_OPPONENT_LOST.value)) {
                         informOverVictory(dataPayload.getCommand());
                         System.out.println("informed opponent over victory");
                     } else {
-                        System.out.println("Received message from client" + clientId + ": " + dataPayload.getCommand());
-                        ClientManager.addMessage(clientId, dataPayload.getCommand());
+                        LOGGER.info("Received message from client" + client.getId() + ": " + dataPayload.getCommand());
                     }
                 }
 
@@ -86,25 +92,10 @@ public class ServerThread extends Thread {
         }
     }
 
-    private void handleMessages(DataOutputStream writer) throws IOException {
-        String message;
-        while ((message = ClientManager.getNextMessage(clientId)) != null) {
-            writer.writeUTF(message);
-            writer.flush();
-        }
-    }
-
-    private void sendMessage(String textmessage) throws IOException {
-        String text = textmessage.split(",")[1];
-        int recUserId = Integer.parseInt(textmessage.split(",")[2]);
-
-        ServerThread recUserThread = ServerThreadsManager.getInstance().getThreadByClientID(recUserId);
-        ObjectOutputStream otherWriter = recUserThread.getWriter();
-        String message = Commands.RECEIVE_MESSAGE.action + " " + text;
-
-        otherWriter.writeUTF(message);
-        otherWriter.flush();
-
+    private void sendMessage(DataPayload pDataPayload) throws IOException {
+        GameSession gameSession = GameSessionManager.getGameSession(client.getId());
+        DataPayload dataPayload = new DataPayload(Commands.FORWARD_MESSAGE.value, pDataPayload.getData());
+        sendThreadSpecificData(GameSessionManager.getOtherId(gameSession, client.getId()), dataPayload);
     }
 
     private void informOverVictory(String message) throws IOException {
@@ -114,19 +105,19 @@ public class ServerThread extends Thread {
 
         ServerThread askedPlayerThread = ServerThreadsManager.getInstance().getThreadByClientID(winningPlayerId);
         ObjectOutputStream otherWriter = askedPlayerThread.getWriter();
-        String messagetoSend = Commands.SEND_OPPONENT_LOST.action + " " + winningPlayerId + " " + opponentId;
+        String messagetoSend = Commands.SEND_OPPONENT_LOST.value + " " + winningPlayerId + " " + opponentId;
 
         otherWriter.writeUTF(messagetoSend);
         otherWriter.flush();
     }
 
-    private void handleInitConnection(ObjectOutputStream objectOutputStream, DataPayload dataPayload) throws IOException {
-        Client client = ClientManager.addClient();
-        client.setName(dataPayload.getData().toString());
-        clientId = client.getId();
-        System.out.println("Client connected with Id:" + clientId);
-        objectOutputStream.writeObject(new DataPayload(Commands.REPLY_INIT_CLIENT.action, clientId));
-        objectOutputStream.flush();
+    private void handleInitConnection(DataPayload pDataPayload)
+            throws IOException {
+        String clientName = pDataPayload.getData()[0];
+        client = ClientManager.addClient(clientName);
+
+        DataPayload dataPayload = new DataPayload(Commands.ANSWER_INIT_CLIENT.value);
+        sendDataPayload(dataPayload);
     }
 
 
@@ -150,62 +141,60 @@ public class ServerThread extends Thread {
         return returnPerson;
     }
 
-    private String getNameFromInit(String init) {
-        return init.split(",")[1];
+    private void sendClientList() {
+        DataPayload dataPayload = new DataPayload(Commands.ANSWER_CLIENT_LIST.value,
+                ClientManager.getClients(client.getId()));
+        sendDataPayload(dataPayload);
     }
 
-    private void sendClientList(ObjectOutputStream writer) {
+    private void sendPerson(Person person) {
+        DataPayload dataPayload = new DataPayload(Commands.ANSWER_PERSON.value, person);
+        sendDataPayload(dataPayload);
+    }
+
+    private void sendDataPayload(DataPayload dataPayload) {
         try {
-            writer.writeObject(ClientManager.getClients());
-            writer.flush();
+            objectOutputStream.writeObject(dataPayload);
+            objectOutputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void sendPerson(ObjectOutputStream writer, Person person) {
-        try {
-            writer.writeObject(person);
-            writer.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
+    private void forwardGameRequest(DataPayload pDataPayload) throws IOException {
+        int opponentId = Integer.parseInt(pDataPayload.getData()[0]);
+        GameSession gameSession = GameSessionManager.openGameSession(client, ClientManager.getClient(opponentId));
+
+        DataPayload dataPayload = new DataPayload(Commands.FORWARD_GAME_REQUEST.value, new String[]{
+                Integer.toString(gameSession.getClient().getId()), gameSession.getClient().getName()});
+
+        sendThreadSpecificData(opponentId, dataPayload);
+    }
+
+    private void sendResponseGameRequest(DataPayload pDataPayload) throws IOException {
+        boolean isAccepted = Boolean.parseBoolean(pDataPayload.getPlainData().toString());
+        GameSession gameSession = GameSessionManager.getGameSession(client.getId());
+
+        if(isAccepted){
+            GameSessionManager.updateGameSessionState(client.getId(), GameStates.STARTED);
+        }else{
+            GameSessionManager.closeGameSession(client.getId());
         }
+
+        DataPayload dataPayload = new DataPayload(Commands.FORWARD_RESPONSE_GAME_REQUEST.value,
+                pDataPayload.getPlainData());
+        sendThreadSpecificData(GameSessionManager.getOtherId(gameSession, client.getId()), dataPayload);
     }
 
-    private void sendGameRequest(String requestMessage) throws IOException {
-        int firstWhiteSpace = requestMessage.indexOf(" ");
-        int secondWhiteSpace = requestMessage.lastIndexOf(" ");
-
-        int askedPlayerId = Integer.parseInt(requestMessage.substring(firstWhiteSpace, secondWhiteSpace).trim());
-        int requestingPlayerId = Integer.parseInt(requestMessage.substring(secondWhiteSpace).trim());
-
-        ServerThread askedPlayerThread = ServerThreadsManager.getInstance().getThreadByClientID(askedPlayerId);
-        ObjectOutputStream otherWriter = askedPlayerThread.getWriter();
-        String message = Commands.SEND_GAME_REQUEST.action + " " + requestingPlayerId;
-
-        otherWriter.writeUTF(message);
-        otherWriter.flush();
-    }
-
-    private void sendAcceptanceBack(String acceptMessage) throws IOException {
-        String[] messageParts = acceptMessage.split("\\s+");
-        int requestPayerId = Integer.parseInt(messageParts[1]);
-        String acceptingPlayerId = messageParts[2];
-
-        ServerThread askedPlayerThread = ServerThreadsManager.getInstance().getThreadByClientID(requestPayerId);
-        ObjectOutputStream otherWriter = askedPlayerThread.getWriter();
-        String message = Commands.REPLY_SEND_GAME_REQUEST.action + " " + acceptingPlayerId;
-
-        otherWriter.writeUTF(message);
-        otherWriter.flush();
+    public void sendThreadSpecificData(int id, DataPayload pDataPayload) throws IOException {
+        ServerThread thread = ServerThreadsManager.getInstance().getThreadByClientID(id);
+        ObjectOutputStream writer = thread.getWriter();
+        writer.writeObject(pDataPayload);
+        writer.flush();
     }
 
     public int getClientId() {
-        return this.clientId;
-    }
-
-    public Socket getSocket() {
-        return this.socket;
+        return client.getId();
     }
 
     public ObjectOutputStream getWriter() {

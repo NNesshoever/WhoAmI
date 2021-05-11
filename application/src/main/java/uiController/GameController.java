@@ -1,8 +1,7 @@
 package uiController;
 
+import entrypoint.App;
 import enums.Commands;
-import javafx.stage.Window;
-import models.Person;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,24 +13,23 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+import models.DataPayload;
+import models.Person;
 import services.ClientService;
-import entrypoint.App;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
 public class GameController {
     private final String OPPONENT = "Mitspieler";
     private final String CHAT_USERNAME = "Du";
-    private boolean gameIsRunning = true;
-
     @SuppressWarnings({"FieldCanBeLocal", "SpellCheckingInspection"})
     private final String base64Img = "iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEPElEQVR4Xu2Xz2scZRjHn+edFWJPexKtwR5KclAyM8ugEKGwSBGKCl4WaWuoKP4NXipSLV78F1Ro1LYQhN6EqpiDEBR25wf1lKWEYIInySUsws77yGALS8laZinDwPe71+z77n4+++G7GxU+oA0oND3hhQGAR8AAGAC4AXB8LgADADcAjs8FYADgBsDxuQAMANwAOD4XgAGAGwDH5wIwAHAD4PhcAAYAbgAcnwvAAMANgONzARgAuAFwfC4AAwA3AI7PBWAA4AbA8bkADADcADg+F4ABgBsAx+cCMABwA+D4XAAGAG4AHJ8LwADADYDjcwEYALgBcHwuAAMANwCOzwVgAOAGwPG5AAwA3AA4PheAAYAbAMfnAjAAcAPg+FwABgBuAByfC8AAwA2A43MBGAC4AXB8LgADADcAjs8FYADgBsDxuQAMANwAOD4XgAG020CSJKfKsrxqZgMz6zrnRmb2WZ7nvy76znu93hkzu+69f83M1Dn3U6fTuTocDvcXvTOO476qfmxmsZn97Zy7vbS09PnOzs5k0TubONfqBUiS5Cnv/c9mdm5Whve+DILgrTRNf6gr6cGH/7uIPDN71sz+MrOXi6L4s+6dcRy/LSLfi4h75Owv3W739e3t7WndO5t6fqsDiKLofVX9ao6MvSzLzoqIryMrjuNvROTdk86o6tdpmn5Q575+v985OjraE5HnTzpnZht5nn9b584mn9vqAMIw/M45d2meEOfcymg0GtcRFobhgXPu9ElnvPf7RVGcqXNfFEUvqeq9/zmzmWXZlTp3NvncVgcQx/FNEbn4JANYW1s7DILguScVQK/Xe9HM/pj3Hr33N4qieK/JD7XOa7U6gMd8BdzPsmyl7ldAFEWbqroxR9KXWZZ9WEfgYDAIdnd3q6+A5TnnLmdZVoXcykerA6h+BJZleVdE+rP2vPdTVX0jz/Pqb7UeSZK8MJ1Of1PVZx85eKCqr6RpeljrQhGJouhNM7vjnAtmz5rZj6urqxe2trbKunc29fxWB1BJWF9ff3oymXxkZu+ISFdVh2b2aZ7n1S/5hR5hGC4HQXCtLMvz1QXOubuq+skiH/7DNxDH8asiUv272vPeV/8G3jo+Pv5iPB7/s9CbbOhQ6wNoyAPsyzAA2I/+P3AGwADADYDjcwEYALgBcHwuAAMANwCOzwVgAOAGwPG5AAwA3AA4PheAAYAbAMfnAjAAcAPg+FwABgBuAByfC8AAwA2A43MBGAC4AXB8LgADADcAjs8FYADgBsDxuQAMANwAOD4XgAGAGwDH5wIwAHAD4PhcAAYAbgAcnwvAAMANgONzARgAuAFwfC4AAwA3AI7PBWAA4AbA8bkADADcADg+F4ABgBsAx+cCMABwA+D4XAAGAG4AHJ8LwADADYDjcwEYALgBcHwuAAMANwCOzwVgAOAGwPG5AAwA3AA4/r+aSe6B2O4AawAAAABJRU5ErkJggg==";
-
-    Person person;
-    ObservableList<String> listMessages;
+    //TODO: Test if fxml vars can be private
     @FXML
     ListView<String> listviewMessages;
     @FXML
@@ -44,9 +42,10 @@ public class GameController {
     ImageView imageView;
     @FXML
     Label labelDetails;
+
+    private ObservableList<String> listMessages;
+    private boolean gameIsRunning = true;
     private ClientService _clientService;
-    private String username = "";
-    private int opponentId;
 
     public static <T> void addItem(ListView<T> listView, T item) {
         List<T> messages = listView.getItems();
@@ -57,17 +56,29 @@ public class GameController {
 
     @FXML
     public void initialize() throws IOException {
-        Person person = _clientService.getInstance(this.username).getPerson();
+        startThread();
+
+        DataPayload dataPayload = new DataPayload(Commands.GET_PERSON.value);
+        _clientService.getInstance().sendDataPayload(dataPayload);
+
         listMessages = FXCollections.observableArrayList();
         listviewMessages.setItems(listMessages);
         textfieldMessage.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode().equals(KeyCode.ENTER)) {
-                sendMessage();
+                sendChatMessage();
             }
         });
-        setActiveMessage();
-        String Details = person.toString();
-        labelDetails.setText(Details);
+    }
+
+    public void setImage(String pBase64Img) {
+        byte[] imageBytes = Base64.getDecoder().decode(pBase64Img);
+        imageView.setImage(new Image((new ByteArrayInputStream(imageBytes))));
+    }
+
+    public void retrieveRandomPerson(DataPayload dataPayload) {
+        Person person = (Person) dataPayload.getPlainData();
+        String details = person.toString();
+        labelDetails.setText(details);
 
         if (person.getBase64Image() != null && !person.getBase64Image().isEmpty()) {
             setImage(person.getBase64Image());
@@ -76,44 +87,26 @@ public class GameController {
         }
     }
 
-    public void setImage(String pBase64Img) {
-        byte[] imageBytes = Base64.getDecoder().decode(pBase64Img);
-        imageView.setImage(new Image((new ByteArrayInputStream(imageBytes))));
-    }
-
-    public void setPerson(Person RandomPerson) {
-        person = RandomPerson;
-    }
-
     @FXML
-    public void onButtonGuessedClicked() throws IOException {
+    private void sendOpponentLostPayload() throws IOException {
         openModal(false);
-        _clientService.getInstance(this.username)
-                .sendText("/opponentLost " + opponentId + " " + _clientService.getInstance(this.username).getClientId());
+        DataPayload dataPayload = new DataPayload(Commands.SEND_OPPONENT_LOST.value);
+        _clientService.getInstance().sendDataPayload(dataPayload);
     }
 
     @FXML
-    public void onButtonSurrenderClicked() throws IOException {
-        openModal(false);
-        _clientService.getInstance(this.username)
-                .sendText("/opponentLost " + opponentId + " " + _clientService.getInstance(this.username).getClientId());
-    }
-
-    @FXML
-    public void openModal(boolean won){
-        String modalMessage = "";
-        if(won == true){
-            modalMessage = "Sie haben gewonnen!";
+    public void openModal(boolean won) {
+        final String modalMessage;
+        if (won) {
+            modalMessage = "Du hast gewonnen!";
+        } else {
+            modalMessage = "Du hast leider verloren... :(";
         }
-        else{
-            modalMessage = "Sie haben verloren... :(";
-        }
-        String finalModalMessage = modalMessage;
 
         Platform.runLater(() -> {
             Alert dialog = new Alert(
                     Alert.AlertType.INFORMATION,
-                    finalModalMessage
+                    modalMessage
             );
 
             Scene currentScene = listviewMessages.getScene();
@@ -128,10 +121,10 @@ public class GameController {
     }
 
     @FXML
-    public void openStartseite(){
+    public void openStartseite() {
         try {
             Stage stage = (Stage) buttonGuessed.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(App.class.getResource("Startseite.fxml"));
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("playersList.fxml"));
             Scene scene = new Scene(loader.load());
             stage.setScene(scene);
             stage.show();
@@ -142,10 +135,10 @@ public class GameController {
 
     @FXML
     public void OnButtonSendClicked() {
-        sendMessage();
+        sendChatMessage();
     }
 
-    private void sendMessage() {
+    private void sendChatMessage() {
         String text = textfieldMessage.getText().trim();
         if (text.length() > 0) {
             addItem(listviewMessages, CHAT_USERNAME + ": " + text);
@@ -156,41 +149,40 @@ public class GameController {
 
     public void sendMessageToServer(String userMessage) {
         try {
-            String message = Commands.SEND_TEXT_MESSAGE.value + "," + userMessage + "," + opponentId;
-            _clientService.getInstance(this.username).sendText(message);
-        } catch (IOException e) {
-            //TODO: Open error toast or something like that
+            DataPayload dataPayload = new DataPayload(Commands.SEND_TEXT_MESSAGE.value, new String[]{userMessage});
+            _clientService.getInstance().sendDataPayload(dataPayload);
+        } catch (IOException ignored) {
         }
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
-    public void setOpponentId(int opponentId) {
-        this.opponentId = opponentId;
-    }
-
-    public void setActiveMessage() {
+    public void startThread() {
         Thread t = new Thread(() -> {
             while (gameIsRunning) {
-             try {
-                    String textMessage = ClientService.getInstance(this.username).getObjectInputStream().readUTF();
-                    if(textMessage.length()>0){
-                        if(textMessage.startsWith(Commands.SEND_OPPONENT_LOST.value)){
+                try {
+                    DataPayload dataPayload = (DataPayload) _clientService.getInstance()
+                            .getObjectInputStream().readObject();
+
+                    System.out.println(dataPayload.getCommand() + " "+ Arrays.toString(dataPayload.getData()));
+                    if (dataPayload != null) {
+                        if (dataPayload.getCommand().equals(Commands.SEND_OPPONENT_LOST.value)) {
                             gameIsRunning = false;
                             openModal(true);
-                        }else if(!textMessage.startsWith(Commands.SEND_GAME_REQUEST.value)) {
+                        } else if (dataPayload.getCommand().equals(Commands.SEND_TEXT_MESSAGE.value)) {
                             Platform.runLater(() -> {
-                                addItem(listviewMessages, OPPONENT + ": " + textMessage);
+                                addItem(listviewMessages, OPPONENT + ": " + dataPayload.getData()[0]);
                             });
+                        } else if (dataPayload.getCommand().equals(Commands.ANSWER_PERSON.value)) {
+                            retrieveRandomPerson(dataPayload);
+                        } else {
+                            System.out.println("Unknown command: " + dataPayload.getCommand());
                         }
                     }
                 } catch (Exception e) {
-                 e.printStackTrace();
+                    e.printStackTrace();
                 }
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(5);
 
                 } catch (InterruptedException ignored) {
 

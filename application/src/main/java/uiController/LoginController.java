@@ -41,7 +41,7 @@ public class LoginController {
             try {
                 ClientService.getInstance(loginTextFieldValue);
                 Stage stage = (Stage) loginTextField.getScene().getWindow();
-                FXMLLoader loader = new FXMLLoader(App.class.getResource("Startseite.fxml"));
+                FXMLLoader loader = new FXMLLoader(App.class.getResource("playersList.fxml"));
                 Scene scene = new Scene(loader.load());
                 stage.setScene(scene);
                 stage.show();

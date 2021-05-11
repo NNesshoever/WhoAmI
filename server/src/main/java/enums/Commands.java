@@ -2,21 +2,29 @@ package enums;
 
 public enum Commands {
 
-    QUIT("/Quit"),
-    INIT_CLIENT("/InitClient"),
-    GET_CLIENT_LIST("/getClientList"),
+    /*
+     * Client: GET | SEND
+     * Server: FORWARD| ANSWER
+     */
+
+    SEND_LOGOUT("/Quit"),
+    SEND_LOGIN("/InitClient"),
+    ANSWER_INIT_CLIENT("/ReplyInitClient"),
+    GET_CLIENT_LIST("/GetClientList"),
+    ANSWER_CLIENT_LIST("/AnswerClientList"),
     GET_PERSON("/GetPerson"),
-    SEND_GAME_REQUEST("/GameRequest"),
-    REPLY_SEND_GAME_REQUEST("/ReplyGameRequest"),
-    ACCEPT_GAME_REQUEST("/Accept"),
-    SEND_OPPONENT_LOST("/opponentLost"),
+    ANSWER_PERSON("/AnswerPerson"),
+    SEND_GAME_REQUEST("/SendGameRequest"),
+    FORWARD_GAME_REQUEST("/ForwardGameRequest"),
+    SEND_RESPONSE_GAME_REQUEST("/SendResponseGameRequest"),
+    FORWARD_RESPONSE_GAME_REQUEST("/ForwardResponseGameRequest"),
+    SEND_OPPONENT_LOST("/OpponentLost"),
     SEND_TEXT_MESSAGE("/SendTextMessage"),
-    RECEIVE_MESSAGE("/recMessage"),
-    REPLY_INIT_CLIENT("/ReplyInitClient");
+    FORWARD_MESSAGE("/ForwardMessage");
 
-    public final String action;
+    public final String value;
 
-    Commands(String action){
-        this.action = action;
+    Commands(String value) {
+        this.value = value;
     }
 }

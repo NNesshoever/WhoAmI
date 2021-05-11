@@ -11,19 +11,24 @@ public class Client {
     private Map<Integer, Integer> clientMessageIndex = new HashMap<>();
     private List<String> messages = new ArrayList<>();
 
+    public Client(int id) {
+        this.id = id;
+    }
 
-    public String getName() {
+    public Client(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Client(){}
+
+     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
-
-    public Client(int id) {
-        this.id = id;
-    }
-    public Client(){}
 
     public int getId() {
         return id;
