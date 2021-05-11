@@ -21,12 +21,14 @@ import services.ClientService;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PlayersListController {
     @FXML
     ListView<User> playersList;
     private ObservableList<User> usersList;
     private ClientService _clientService;
+    private AtomicBoolean running = new AtomicBoolean(true);
 
     @FXML
     public void initialize() throws IOException {
@@ -54,7 +56,7 @@ public class PlayersListController {
 
     public void startThread() {
         Thread t = new Thread(() -> {
-            while (true) {
+            while (running.get()) {
                 try {
                     DataPayload dataPayload = (DataPayload) _clientService.getInstance()
                             .getObjectInputStream().readObject();
@@ -64,13 +66,14 @@ public class PlayersListController {
                         boolean isAccepted = Boolean.parseBoolean(dataPayload.getPlainData().toString());
                         if (isAccepted) {
                             openGameView();
-                        }else {
+                            running.set(false);
+                        } else {
                             System.out.println("abgelehnt");
                         }
-                        System.out.println(isAccepted);
                     } else if (dataPayload.getCommand().equals(Commands.ANSWER_CLIENT_LIST.value)) {
                         usersList.setAll((ArrayList<User>) dataPayload.getPlainData());
                     }
+
                 } catch (Exception ignored) {
                 }
                 try {
@@ -130,28 +133,25 @@ public class PlayersListController {
             DataPayload dataPayload = new DataPayload(Commands.SEND_RESPONSE_GAME_REQUEST.value,
                     Boolean.toString(isAccepted));
             _clientService.getInstance().sendDataPayload(dataPayload);
+            running.set(false);
             openGameView();
         } catch (IOException ignored) {
         }
     }
 
     public synchronized void openGameView() throws IOException {
-        Stage stage = (Stage) playersList.getScene().getWindow();
-        FXMLLoader loader = new FXMLLoader(App.class.getResource("game.fxml"));
-        try {
-            Platform.runLater(() -> {
-                Scene scene = null;
-                try {
-                    scene = new Scene(loader.load());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                stage.setScene(scene);
-                stage.show();
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Platform.runLater(() -> {
+            Stage stage = (Stage) playersList.getScene().getWindow();
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("game.fxml"));
+            Scene scene = null;
+            try {
+                scene = new Scene(loader.load());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            stage.setScene(scene);
+            stage.show();
+        });
     }
 
     @FXML

@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GameController {
     private final String OPPONENT = "Mitspieler";
@@ -44,7 +45,7 @@ public class GameController {
     Label labelDetails;
 
     private ObservableList<String> listMessages;
-    private boolean gameIsRunning = true;
+    private AtomicBoolean running = new AtomicBoolean(true);
     private ClientService _clientService;
 
     public static <T> void addItem(ListView<T> listView, T item) {
@@ -76,15 +77,17 @@ public class GameController {
     }
 
     public void retrieveRandomPerson(DataPayload dataPayload) {
-        Person person = (Person) dataPayload.getPlainData();
-        String details = person.toString();
-        labelDetails.setText(details);
+        Platform.runLater(() -> {
+            Person person = (Person) dataPayload.getPlainData();
+            String details = person.toString();
+            labelDetails.setText(details);
 
-        if (person.getBase64Image() != null && !person.getBase64Image().isEmpty()) {
-            setImage(person.getBase64Image());
-        } else {
-            setImage(base64Img);
-        }
+            if (person.getBase64Image() != null && !person.getBase64Image().isEmpty()) {
+                setImage(person.getBase64Image());
+            } else {
+                setImage(base64Img);
+            }
+        });
     }
 
     @FXML
@@ -158,15 +161,16 @@ public class GameController {
 
     public void startThread() {
         Thread t = new Thread(() -> {
-            while (gameIsRunning) {
+            while (running.get()) {
                 try {
+
                     DataPayload dataPayload = (DataPayload) _clientService.getInstance()
                             .getObjectInputStream().readObject();
 
-                    System.out.println(dataPayload.getCommand() + " "+ Arrays.toString(dataPayload.getData()));
+                    System.out.println(dataPayload);
                     if (dataPayload != null) {
                         if (dataPayload.getCommand().equals(Commands.SEND_OPPONENT_LOST.value)) {
-                            gameIsRunning = false;
+                            running.set(false);
                             openModal(true);
                         } else if (dataPayload.getCommand().equals(Commands.SEND_TEXT_MESSAGE.value)) {
                             Platform.runLater(() -> {
@@ -178,6 +182,7 @@ public class GameController {
                             System.out.println("Unknown command: " + dataPayload.getCommand());
                         }
                     }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
