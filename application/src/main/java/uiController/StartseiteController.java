@@ -1,6 +1,7 @@
 package uiController;
 
 import enums.Commands;
+import javafx.stage.Window;
 import models.User;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -113,6 +114,11 @@ public class StartseiteController {
                     declineButton
             );
             dialog.setHeaderText("Spielanfrage");
+
+            Scene currentScene = PlayersList.getScene();
+            Window currentWindow = currentScene.getWindow();
+            dialog.setX(currentWindow.getX() + (currentWindow.getWidth() - dialog.getDialogPane().getWidth()) / 2);
+            dialog.setY(currentWindow.getY() + (currentWindow.getHeight() - dialog.getDialogPane().getHeight()) / 2);
 
             dialog.showAndWait()
                     .filter(response -> response.equals(acceptButton) || response.equals(declineButton))

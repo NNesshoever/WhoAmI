@@ -1,6 +1,7 @@
 package uiController;
 
 import enums.Commands;
+import javafx.stage.Window;
 import models.Person;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -114,6 +115,12 @@ public class GameController {
                     Alert.AlertType.INFORMATION,
                     finalModalMessage
             );
+
+            Scene currentScene = listviewMessages.getScene();
+            Window currentWindow = currentScene.getWindow();
+            dialog.setX(currentWindow.getX() + (currentWindow.getWidth() - dialog.getDialogPane().getWidth()) / 2);
+            dialog.setY(currentWindow.getY() + (currentWindow.getHeight() - dialog.getDialogPane().getHeight()) / 2);
+
             dialog.showAndWait()
                     .filter(response -> response.equals(ButtonType.OK))
                     .ifPresent(response -> openStartseite());
