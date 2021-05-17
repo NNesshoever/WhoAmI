@@ -20,6 +20,7 @@ import services.ClientService;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -173,7 +174,7 @@ public class GameController {
                         if (dataPayload.getCommand().equals(Commands.SEND_OPPONENT_LOST.value)) {
                             running.set(false);
                             openModal(true);
-                        } else if (dataPayload.getCommand().equals(Commands.SEND_TEXT_MESSAGE.value)) {
+                        } else if (dataPayload.getCommand().equals(Commands.FORWARD_MESSAGE.value)) {
                             Platform.runLater(() -> {
                                 addItem(listviewMessages, OPPONENT + ": " + dataPayload.getData()[0]);
                             });
