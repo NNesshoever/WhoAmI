@@ -11,6 +11,7 @@ import java.util.Optional;
 
 public class ClientManager {
     private static List<Client> clients = new ArrayList<>();
+    private static int clientCount =0;
 
     public static synchronized ArrayList<User> getClients(int clientId) {
         ArrayList<User> clientList = new ArrayList<>();
@@ -24,7 +25,7 @@ public class ClientManager {
 
     public static synchronized Client addClient(String name) {
         Client client = null;
-        clients.add(new Client(clients.size(), name));
+        clients.add(new Client(clientCount++, name));
         for (Client c : clients) {
             for (Client cOther : clients) {
                 if (!c.getClientMessageIndex().containsKey(cOther.getId())) {
