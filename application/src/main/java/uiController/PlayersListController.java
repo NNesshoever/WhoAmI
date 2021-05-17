@@ -28,7 +28,7 @@ public class PlayersListController {
     ListView<User> userListView;
     private ObservableList<User> usersList;
     private ClientService _clientService;
-    private AtomicBoolean running = new AtomicBoolean(true);
+    private boolean running = true;
 
     @FXML
     public void initialize() throws IOException {
@@ -56,19 +56,19 @@ public class PlayersListController {
 
     public void startThread() {
         Thread t = new Thread(() -> {
-            while (running.get()) {
+            while (running) {
                 try {
                     Object test = _clientService.getInstance()
                             .getObjectInputStream().readObject();
                     System.out.println("incoming PlayerList " + test.toString());
                     DataPayload dataPayload = (DataPayload) test;
                     if (dataPayload.getCommand().equals(Commands.FORWARD_GAME_REQUEST.value)) {
-                        running.set(false);
+                        running = false;
                         displayRequest(dataPayload);
                     } else if (dataPayload.getCommand().equals(Commands.FORWARD_RESPONSE_GAME_REQUEST.value)) {
                         boolean isAccepted = Boolean.parseBoolean(dataPayload.getPlainData().toString());
                         if (isAccepted) {
-                            running.set(false);
+                            running = false;
                             openGameView();
                         } else {
                             System.out.println("abgelehnt");
@@ -130,13 +130,13 @@ public class PlayersListController {
 
     public void acceptRequest() throws IOException {
         respondToGameRequest(true);
-        running.set(false);
+        running = false;
         openGameView();
     }
 
     public void declineRequest() {
         respondToGameRequest(false);
-        running.set(true);
+        running = true;
         //Thread wird geschlossen bei Spielanfrage
         startThread();
     }

@@ -7,15 +7,10 @@ import managers.GameSessionManager;
 import models.Client;
 import models.DataPayload;
 import models.GameSession;
-import models.Person;
 import org.apache.log4j.Logger;
-import utils.JsonService;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 
 public class ServerThread extends Thread {
     protected static final Logger LOGGER = Logger.getLogger(ServerThread.class);
@@ -99,8 +94,10 @@ public class ServerThread extends Thread {
     }
 
     private void informOverVictory(DataPayload pDataPayload) throws IOException {
-        GameSession gameSession = GameSessionManager.getGameSession(client.getId());
+        DataPayload ownDataPayload = new DataPayload(Commands.ANSWER_DEFAULT.value);
+        sendDataPayload(ownDataPayload);
 
+        GameSession gameSession = GameSessionManager.getGameSession(client.getId());
         DataPayload dataPayload = new DataPayload(Commands.FORWARD_GAME_OVER.value, new String[]{pDataPayload.getData()[0], client.getPerson().getFullName()});
         sendThreadSpecificData(GameSessionManager.getOtherId(gameSession, client.getId()),dataPayload);
     }
@@ -110,7 +107,7 @@ public class ServerThread extends Thread {
         String clientName = pDataPayload.getData()[0];
         client = ClientManager.addClient(clientName);
 
-        DataPayload dataPayload = new DataPayload(Commands.ANSWER_INIT_CLIENT.value);
+        DataPayload dataPayload = new DataPayload(Commands.ANSWER_LOGIN.value);
         sendDataPayload(dataPayload);
     }
 

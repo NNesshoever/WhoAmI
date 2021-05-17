@@ -21,7 +21,8 @@ public enum Commands {
     SEND_GAME_OVER("/SendGameOver"),
     FORWARD_GAME_OVER("/ForwardGameOver"),
     SEND_TEXT_MESSAGE("/SendTextMessage"),
-    FORWARD_MESSAGE("/ForwardMessage");
+    FORWARD_MESSAGE("/ForwardMessage"),
+    ANSWER_DEFAULT("/AnswerDefault");
 
     public final String value;
 

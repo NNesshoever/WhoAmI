@@ -47,7 +47,7 @@ public class GameController {
     Label labelDetails;
 
     private ObservableList<String> listMessages;
-    private AtomicBoolean running = new AtomicBoolean(true);
+    private boolean running = true;
     private ClientService _clientService;
 
     public static <T> void addItem(ListView<T> listView, T item) {
@@ -104,7 +104,7 @@ public class GameController {
         }
         DataPayload dataPayload = new DataPayload(Commands.SEND_GAME_OVER.value, new String[]{action.toString()});
         _clientService.getInstance().sendDataPayload(dataPayload);
-        running.set(false);
+        running = false;
     }
 
     @FXML
@@ -114,7 +114,7 @@ public class GameController {
             modalMessage.append("Du hast gewonnen!");
             if (dataPayload.getData()[0].equals(Consts.ACTION_SURRENDER.toString())) {
                 modalMessage.append(" Dein Gegner hat aufgegeben.\n")
-                            .append("Die zu erratende Person war: ").append(dataPayload.getData()[1]);
+                        .append("Die zu erratende Person war: ").append(dataPayload.getData()[1]);
             } else {
                 modalMessage.append(" Du hast die Person erraten.");
             }
@@ -139,7 +139,6 @@ public class GameController {
         });
     }
 
-    @FXML
     public void openPlayersList() {
         try {
             Stage stage = (Stage) buttonGuessed.getScene().getWindow();
@@ -177,27 +176,26 @@ public class GameController {
 
     public void startThread() {
         Thread t = new Thread(() -> {
-            while (running.get()) {
+            while (running) {
                 try {
                     ObjectInputStream inputStream = _clientService.getInstance().getObjectInputStream();
                     Object test = inputStream.readObject();
                     System.out.println("incoming GameController " + test.toString());
                     DataPayload dataPayload = (DataPayload) test;
-                    if (dataPayload != null) {
-                        if (dataPayload.getCommand().equals(Commands.FORWARD_GAME_OVER.value)) {
-                            running.set(false);
-                            openModal(true, dataPayload);
-                        } else if (dataPayload.getCommand().equals(Commands.FORWARD_MESSAGE.value)) {
-                            Platform.runLater(() -> {
-                                addItem(listviewMessages, OPPONENT + ": " + dataPayload.getData()[0]);
-                            });
-                        } else if (dataPayload.getCommand().equals(Commands.ANSWER_PERSON.value)) {
-                            retrieveRandomPerson(dataPayload);
-                        } else {
-                            System.out.println("Unknown command: " + dataPayload.getCommand());
-                        }
+                    if (dataPayload.getCommand().equals(Commands.FORWARD_GAME_OVER.value)) {
+                        running = false;
+                        openModal(true, dataPayload);
+                    } else if (dataPayload.getCommand().equals(Commands.FORWARD_MESSAGE.value)) {
+                        Platform.runLater(() -> {
+                            addItem(listviewMessages, OPPONENT + ": " + dataPayload.getData()[0]);
+                        });
+                    } else if (dataPayload.getCommand().equals(Commands.ANSWER_PERSON.value)) {
+                        retrieveRandomPerson(dataPayload);
+                    } else if (dataPayload.getCommand().equals(Commands.ANSWER_DEFAULT.value)) {
+                        running = false;
+                    } else {
+                        System.out.println("Unknown command: " + dataPayload.getCommand());
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
