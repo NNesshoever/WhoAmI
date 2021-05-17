@@ -2,9 +2,11 @@ package uiController;
 
 import entrypoint.App;
 import enums.Commands;
+import enums.Consts;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -21,7 +23,6 @@ import services.ClientService;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -94,25 +95,37 @@ public class GameController {
     }
 
     @FXML
-    private void sendOpponentLostPayload() throws IOException {
-        openModal(false);
-        DataPayload dataPayload = new DataPayload(Commands.SEND_OPPONENT_LOST.value);
+    private void sendOpponentLostPayload(ActionEvent actionEvent) throws IOException {
+        String buttonId = ((Button) actionEvent.getSource()).getId();
+        Consts action = Consts.ACTION_GUESSED;
+        openModal(false, null);
+        if (buttonId.equals("buttonSurrender")) {
+            action = Consts.ACTION_SURRENDER;
+        }
+        DataPayload dataPayload = new DataPayload(Commands.SEND_GAME_OVER.value, new String[]{action.toString()});
         _clientService.getInstance().sendDataPayload(dataPayload);
+        running.set(false);
     }
 
     @FXML
-    public void openModal(boolean won) {
-        final String modalMessage;
+    public void openModal(boolean won, DataPayload dataPayload) {
+        StringBuilder modalMessage = new StringBuilder();
         if (won) {
-            modalMessage = "Du hast gewonnen!";
+            modalMessage.append("Du hast gewonnen!");
+            if (dataPayload.getData()[0].equals(Consts.ACTION_SURRENDER.toString())) {
+                modalMessage.append(" Dein Gegner hat aufgegeben.\n")
+                            .append("Die zu erratende Person war: ").append(dataPayload.getData()[1]);
+            } else {
+                modalMessage.append(" Du hast die Person erraten.");
+            }
         } else {
-            modalMessage = "Du hast leider verloren... :(";
+            modalMessage.append("Du hast leider verloren... :(");
         }
 
         Platform.runLater(() -> {
             Alert dialog = new Alert(
                     Alert.AlertType.INFORMATION,
-                    modalMessage
+                    modalMessage.toString()
             );
 
             Scene currentScene = listviewMessages.getScene();
@@ -122,12 +135,12 @@ public class GameController {
 
             dialog.showAndWait()
                     .filter(response -> response.equals(ButtonType.OK))
-                    .ifPresent(response -> openStartseite());
+                    .ifPresent(response -> openPlayersList());
         });
     }
 
     @FXML
-    public void openStartseite() {
+    public void openPlayersList() {
         try {
             Stage stage = (Stage) buttonGuessed.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(App.class.getResource("playersList.fxml"));
@@ -171,9 +184,9 @@ public class GameController {
                     System.out.println("incoming GameController " + test.toString());
                     DataPayload dataPayload = (DataPayload) test;
                     if (dataPayload != null) {
-                        if (dataPayload.getCommand().equals(Commands.SEND_OPPONENT_LOST.value)) {
+                        if (dataPayload.getCommand().equals(Commands.FORWARD_GAME_OVER.value)) {
                             running.set(false);
-                            openModal(true);
+                            openModal(true, dataPayload);
                         } else if (dataPayload.getCommand().equals(Commands.FORWARD_MESSAGE.value)) {
                             Platform.runLater(() -> {
                                 addItem(listviewMessages, OPPONENT + ": " + dataPayload.getData()[0]);

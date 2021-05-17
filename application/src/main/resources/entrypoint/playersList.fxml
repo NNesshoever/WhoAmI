@@ -20,7 +20,7 @@
       <RowConstraints maxHeight="157.0" minHeight="10.0" prefHeight="61.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <ListView fx:id="playersList" onMouseClicked="#sendGameRequest" prefHeight="457.0" prefWidth="467.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+      <ListView fx:id="userListView" onMouseClicked="#sendGameRequest" prefHeight="457.0" prefWidth="467.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
          <GridPane.margin>
             <Insets top="5.0" />
          </GridPane.margin></ListView>

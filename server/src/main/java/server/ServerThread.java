@@ -13,6 +13,7 @@ import utils.JsonService;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -43,7 +44,7 @@ public class ServerThread extends Thread {
             try {
                 if (dataInputStream.available() > 0) {
                     DataPayload dataPayload = (DataPayload) objectInputStream.readObject();
-                    LOGGER.info("incoming payload "+ dataPayload);
+                    LOGGER.info("incoming payload " + dataPayload);
                     if (dataPayload == null) continue;
                     if (dataPayload.getCommand().equals(Commands.SEND_LOGOUT.value)) {
                         // TODO: Fix Logout error
@@ -56,8 +57,7 @@ public class ServerThread extends Thread {
                         sendClientList();
                         LOGGER.info("Liste gesendet");
                     } else if (dataPayload.getCommand().equals(Commands.GET_PERSON.value)) {
-                        Person person = getRandomPerson();
-                        sendPerson(person);
+                        sendPerson();
                         LOGGER.info("Person gesendet");
                     } else if (dataPayload.getCommand().equals(Commands.SEND_GAME_REQUEST.value)) {
                         forwardGameRequest(dataPayload);
@@ -68,8 +68,8 @@ public class ServerThread extends Thread {
                     } else if (dataPayload.getCommand().equals(Commands.SEND_TEXT_MESSAGE.value)) {
                         sendMessage(dataPayload);
                         LOGGER.info("Send text message");
-                    } else if (dataPayload.getCommand().equals(Commands.SEND_OPPONENT_LOST.value)) {
-                        informOverVictory(dataPayload.getCommand());
+                    } else if (dataPayload.getCommand().equals(Commands.SEND_GAME_OVER.value)) {
+                        informOverVictory(dataPayload);
                         LOGGER.info("informed opponent over victory");
                     } else {
                         LOGGER.info("Received message from client" + client.getId() + ": " + dataPayload.getCommand());
@@ -98,17 +98,11 @@ public class ServerThread extends Thread {
         sendThreadSpecificData(GameSessionManager.getOtherId(gameSession, client.getId()), dataPayload);
     }
 
-    private void informOverVictory(String message) throws IOException {
-        String[] messageParts = message.split("\\s+");
-        int winningPlayerId = Integer.parseInt(messageParts[1]);
-        String opponentId = messageParts[2];
+    private void informOverVictory(DataPayload pDataPayload) throws IOException {
+        GameSession gameSession = GameSessionManager.getGameSession(client.getId());
 
-        ServerThread askedPlayerThread = ServerThreadsManager.getInstance().getThreadByClientID(winningPlayerId);
-        ObjectOutputStream otherWriter = askedPlayerThread.getWriter();
-        String messagetoSend = Commands.SEND_OPPONENT_LOST.value + " " + winningPlayerId + " " + opponentId;
-
-        otherWriter.writeUTF(messagetoSend);
-        otherWriter.flush();
+        DataPayload dataPayload = new DataPayload(Commands.FORWARD_GAME_OVER.value, new String[]{pDataPayload.getData()[0], client.getPerson().getFullName()});
+        sendThreadSpecificData(GameSessionManager.getOtherId(gameSession, client.getId()),dataPayload);
     }
 
     private void handleInitConnection(DataPayload pDataPayload)
@@ -121,34 +115,14 @@ public class ServerThread extends Thread {
     }
 
 
-    private synchronized Person getRandomPerson() {
-        List<Person> Persons = JsonService.loadJson();
-        Random rnd = new Random();
-        int max = Persons.size();
-        long seed = System.nanoTime();
-        seed ^= (seed << rnd.nextInt());
-        seed ^= (seed >> rnd.nextInt());
-        String SeedString = String.valueOf(seed);
-        int i = 0;
-        int temp = 0;
-        do {
-            temp = Character.digit(SeedString.charAt(i), 10);
-            ++i;
-
-        } while (temp > max - 1 && temp > 0 && i <= SeedString.length());
-        Person returnPerson = new Person();
-        returnPerson = Persons.get(temp);
-        return returnPerson;
-    }
-
     private void sendClientList() {
         DataPayload dataPayload = new DataPayload(Commands.ANSWER_CLIENT_LIST.value,
                 ClientManager.getClients(client.getId()));
         sendDataPayload(dataPayload);
     }
 
-    private void sendPerson(Person person) {
-        DataPayload dataPayload = new DataPayload(Commands.ANSWER_PERSON.value,person);
+    private void sendPerson() {
+        DataPayload dataPayload = new DataPayload(Commands.ANSWER_PERSON.value, client.getPerson());
         sendDataPayload(dataPayload);
     }
 

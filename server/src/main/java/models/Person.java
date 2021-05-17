@@ -194,6 +194,10 @@ public class Person implements Serializable {
         this.gender = gender;
     }
 
+    public String getFullName(){
+        return surname+" "+lastname;
+    }
+
     private String generateReadableString(String[] arr){
         String result = "";
         for (String s : arr) {

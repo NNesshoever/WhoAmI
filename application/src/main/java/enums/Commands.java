@@ -18,7 +18,8 @@ public enum Commands {
     FORWARD_GAME_REQUEST("/ForwardGameRequest"),
     SEND_RESPONSE_GAME_REQUEST("/SendResponseGameRequest"),
     FORWARD_RESPONSE_GAME_REQUEST("/ForwardResponseGameRequest"),
-    SEND_OPPONENT_LOST("/OpponentLost"),
+    SEND_GAME_OVER("/SendGameOver"),
+    FORWARD_GAME_OVER("/ForwardGameOver"),
     SEND_TEXT_MESSAGE("/SendTextMessage"),
     FORWARD_MESSAGE("/ForwardMessage");
 

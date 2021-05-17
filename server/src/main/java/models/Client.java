@@ -10,6 +10,7 @@ public class Client {
     private String name;
     private Map<Integer, Integer> clientMessageIndex = new HashMap<>();
     private List<String> messages = new ArrayList<>();
+    private Person person;
 
     public Client(int id) {
         this.id = id;
@@ -54,4 +55,11 @@ public class Client {
         return clientMessageIndex;
     }
 
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
 }

@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PlayersListController {
     @FXML
-    ListView<User> playersList;
+    ListView<User> userListView;
     private ObservableList<User> usersList;
     private ClientService _clientService;
     private AtomicBoolean running = new AtomicBoolean(true);
@@ -33,7 +33,7 @@ public class PlayersListController {
     @FXML
     public void initialize() throws IOException {
         usersList = FXCollections.observableArrayList();
-        playersList.setItems(usersList);
+        userListView.setItems(usersList);
         startThread();
         loadClientList();
     }
@@ -44,9 +44,9 @@ public class PlayersListController {
     }
 
     public void sendGameRequest(MouseEvent mouseEvent) {
-        if (playersList.getSelectionModel().getSelectedItem() != null && mouseEvent.getClickCount() == 2) {
+        if (userListView.getSelectionModel().getSelectedItem() != null && mouseEvent.getClickCount() == 2) {
             DataPayload dataPayload = new DataPayload(Commands.SEND_GAME_REQUEST.value, new String[]{
-                    Integer.toString(playersList.getSelectionModel().getSelectedItem().getId())});
+                    Integer.toString(userListView.getSelectionModel().getSelectedItem().getId())});
             try {
                 _clientService.getInstance().sendDataPayload(dataPayload);
             } catch (IOException ignored) {
@@ -74,13 +74,15 @@ public class PlayersListController {
                             System.out.println("abgelehnt");
                         }
                     } else if (dataPayload.getCommand().equals(Commands.ANSWER_CLIENT_LIST.value)) {
-                        usersList.setAll((ArrayList<User>) dataPayload.getPlainData());
+                        Platform.runLater(() ->usersList.setAll((ArrayList<User>) dataPayload.getPlainData()));
                     }
-                } catch (Exception ignored) {
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 try {
                     Thread.sleep(5);
-                } catch (InterruptedException ignored) {
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -104,7 +106,7 @@ public class PlayersListController {
             );
             dialog.setHeaderText("Spielanfrage");
 
-            Scene currentScene = playersList.getScene();
+            Scene currentScene = userListView.getScene();
             Window currentWindow = currentScene.getWindow();
             dialog.setX(currentWindow.getX() + (currentWindow.getWidth() - dialog.getDialogPane().getWidth()) / 2);
             dialog.setY(currentWindow.getY() + (currentWindow.getHeight() - dialog.getDialogPane().getHeight()) / 2);
@@ -148,9 +150,9 @@ public class PlayersListController {
         }
     }
 
-    public void openGameView() throws IOException {
+    public void openGameView() {
         Platform.runLater(() -> {
-            Stage stage = (Stage) playersList.getScene().getWindow();
+            Stage stage = (Stage) userListView.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(App.class.getResource("game.fxml"));
             Scene scene = null;
             try {
@@ -169,7 +171,7 @@ public class PlayersListController {
             DataPayload dataPayload = new DataPayload(Commands.SEND_LOGOUT.value);
             _clientService.getInstance().sendDataPayload(dataPayload);
 
-            Stage stage = (Stage) playersList.getScene().getWindow();
+            Stage stage = (Stage) userListView.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(App.class.getResource("login.fxml"));
             Scene scene = new Scene(loader.load());
             stage.setScene(scene);
