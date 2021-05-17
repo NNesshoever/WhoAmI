@@ -57,11 +57,6 @@ public class GameController {
 
     @FXML
     public void initialize() throws IOException {
-        startThread();
-
-        DataPayload dataPayload = new DataPayload(Commands.GET_PERSON.value);
-        _clientService.getInstance().sendDataPayload(dataPayload);
-
         listMessages = FXCollections.observableArrayList();
         listviewMessages.setItems(listMessages);
         textfieldMessage.setOnKeyPressed(keyEvent -> {
@@ -69,6 +64,13 @@ public class GameController {
                 sendChatMessage();
             }
         });
+        startThread();
+        loadPerson();
+    }
+
+    public void loadPerson() throws IOException {
+        DataPayload dataPayload = new DataPayload(Commands.GET_PERSON.value);
+        _clientService.getInstance().sendDataPayload(dataPayload);
     }
 
     public void setImage(String pBase64Img) {
@@ -163,11 +165,10 @@ public class GameController {
         Thread t = new Thread(() -> {
             while (running.get()) {
                 try {
-
-                    DataPayload dataPayload = (DataPayload) _clientService.getInstance()
-                            .getObjectInputStream().readObject();
-
-                    System.out.println(dataPayload);
+                    ObjectInputStream inputStream = _clientService.getInstance().getObjectInputStream();
+                    Object test = inputStream.readObject();
+                    System.out.println("incoming GameController " + test.toString());
+                    DataPayload dataPayload = (DataPayload) test;
                     if (dataPayload != null) {
                         if (dataPayload.getCommand().equals(Commands.SEND_OPPONENT_LOST.value)) {
                             running.set(false);

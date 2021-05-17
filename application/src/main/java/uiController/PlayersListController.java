@@ -58,22 +58,24 @@ public class PlayersListController {
         Thread t = new Thread(() -> {
             while (running.get()) {
                 try {
-                    DataPayload dataPayload = (DataPayload) _clientService.getInstance()
+                    Object test = _clientService.getInstance()
                             .getObjectInputStream().readObject();
+                    System.out.println("incoming PlayerList " + test.toString());
+                    DataPayload dataPayload = (DataPayload) test;
                     if (dataPayload.getCommand().equals(Commands.FORWARD_GAME_REQUEST.value)) {
+                        running.set(false);
                         displayRequest(dataPayload);
                     } else if (dataPayload.getCommand().equals(Commands.FORWARD_RESPONSE_GAME_REQUEST.value)) {
                         boolean isAccepted = Boolean.parseBoolean(dataPayload.getPlainData().toString());
                         if (isAccepted) {
-                            openGameView();
                             running.set(false);
+                            openGameView();
                         } else {
                             System.out.println("abgelehnt");
                         }
                     } else if (dataPayload.getCommand().equals(Commands.ANSWER_CLIENT_LIST.value)) {
                         usersList.setAll((ArrayList<User>) dataPayload.getPlainData());
                     }
-
                 } catch (Exception ignored) {
                 }
                 try {
@@ -111,7 +113,11 @@ public class PlayersListController {
                     .filter(response -> response.equals(acceptButton) || response.equals(declineButton))
                     .ifPresent(response -> {
                         if (response.equals(acceptButton)) {
-                            acceptRequest();
+                            try {
+                                acceptRequest();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         } else if (response.equals(declineButton)) {
                             declineRequest();
                         }
@@ -120,12 +126,17 @@ public class PlayersListController {
 
     }
 
-    public void acceptRequest() {
+    public void acceptRequest() throws IOException {
         respondToGameRequest(true);
+        running.set(false);
+        openGameView();
     }
 
     public void declineRequest() {
         respondToGameRequest(false);
+        running.set(true);
+        //Thread wird geschlossen bei Spielanfrage
+        startThread();
     }
 
     private void respondToGameRequest(boolean isAccepted) {
@@ -133,13 +144,11 @@ public class PlayersListController {
             DataPayload dataPayload = new DataPayload(Commands.SEND_RESPONSE_GAME_REQUEST.value,
                     Boolean.toString(isAccepted));
             _clientService.getInstance().sendDataPayload(dataPayload);
-            running.set(false);
-            openGameView();
         } catch (IOException ignored) {
         }
     }
 
-    public synchronized void openGameView() throws IOException {
+    public void openGameView() throws IOException {
         Platform.runLater(() -> {
             Stage stage = (Stage) playersList.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(App.class.getResource("game.fxml"));
