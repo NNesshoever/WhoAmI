@@ -30,7 +30,6 @@ public class ClientService {
     public static ClientService getInstance(String username) throws IOException {
         try {
             if (single_instance == null) {
-                System.out.println("getInstance(String username)");
                 single_instance = new ClientService(username);
             }
         } catch (Exception e) {
@@ -40,13 +39,13 @@ public class ClientService {
     }
 
     public static ClientService getInstance() {
-        System.out.println("getInstance()");
         return single_instance;
     }
 
     public void sendDataPayload(DataPayload dataPayload) throws IOException {
         objectOutputStream.writeObject(dataPayload);
         objectOutputStream.flush();
+        System.out.println("Send to Server "+ dataPayload);
     }
 
     public ObjectInputStream getObjectInputStream() {
