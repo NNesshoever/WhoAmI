@@ -24,13 +24,13 @@ public class ServerThread extends Thread {
     private ServerThreadsManager serverThreadsManager = ServerThreadsManager.getInstance();
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
+    private DataInputStream dataInputStream;
 
     public ServerThread(Socket clientSocket) throws IOException {
         this.socket = clientSocket;
     }
 
     public void run() {
-        DataInputStream dataInputStream;
         try {
             dataInputStream = new DataInputStream(socket.getInputStream());
             objectInputStream = new ObjectInputStream(socket.getInputStream());
@@ -43,8 +43,7 @@ public class ServerThread extends Thread {
             try {
                 if (dataInputStream.available() > 0) {
                     DataPayload dataPayload = (DataPayload) objectInputStream.readObject();
-                    LOGGER.info(dataPayload);
-
+                    LOGGER.info("incoming payload "+ dataPayload);
                     if (dataPayload == null) continue;
                     if (dataPayload.getCommand().equals(Commands.SEND_LOGOUT.value)) {
                         // TODO: Fix Logout error
@@ -55,22 +54,23 @@ public class ServerThread extends Thread {
                         handleInitConnection(dataPayload);
                     } else if (dataPayload.getCommand().equals(Commands.GET_CLIENT_LIST.value)) {
                         sendClientList();
-                        System.out.println("Liste gesendet");
+                        LOGGER.info("Liste gesendet");
                     } else if (dataPayload.getCommand().equals(Commands.GET_PERSON.value)) {
                         Person person = getRandomPerson();
                         sendPerson(person);
+                        LOGGER.info("Person gesendet");
                     } else if (dataPayload.getCommand().equals(Commands.SEND_GAME_REQUEST.value)) {
                         forwardGameRequest(dataPayload);
-                        System.out.println("send game request");
+                        LOGGER.info("send game request");
                     } else if (dataPayload.getCommand().equals(Commands.SEND_RESPONSE_GAME_REQUEST.value)) {
                         sendResponseGameRequest(dataPayload);
-                        System.out.println("send game acceptance");
+                        LOGGER.info("send response game request");
                     } else if (dataPayload.getCommand().equals(Commands.SEND_TEXT_MESSAGE.value)) {
                         sendMessage(dataPayload);
-                        System.out.println("Send Text Message");
+                        LOGGER.info("Send text message");
                     } else if (dataPayload.getCommand().equals(Commands.SEND_OPPONENT_LOST.value)) {
                         informOverVictory(dataPayload.getCommand());
-                        System.out.println("informed opponent over victory");
+                        LOGGER.info("informed opponent over victory");
                     } else {
                         LOGGER.info("Received message from client" + client.getId() + ": " + dataPayload.getCommand());
                     }
@@ -121,7 +121,7 @@ public class ServerThread extends Thread {
     }
 
 
-    private Person getRandomPerson() {
+    private synchronized Person getRandomPerson() {
         List<Person> Persons = JsonService.loadJson();
         Random rnd = new Random();
         int max = Persons.size();
@@ -148,18 +148,10 @@ public class ServerThread extends Thread {
     }
 
     private void sendPerson(Person person) {
-        DataPayload dataPayload = new DataPayload(Commands.ANSWER_PERSON.value, person);
+        DataPayload dataPayload = new DataPayload(Commands.ANSWER_PERSON.value,person);
         sendDataPayload(dataPayload);
     }
 
-    private void sendDataPayload(DataPayload dataPayload) {
-        try {
-            objectOutputStream.writeObject(dataPayload);
-            objectOutputStream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void forwardGameRequest(DataPayload pDataPayload) throws IOException {
         int opponentId = Integer.parseInt(pDataPayload.getData()[0]);
@@ -175,9 +167,9 @@ public class ServerThread extends Thread {
         boolean isAccepted = Boolean.parseBoolean(pDataPayload.getPlainData().toString());
         GameSession gameSession = GameSessionManager.getGameSession(client.getId());
 
-        if(isAccepted){
+        if (isAccepted) {
             GameSessionManager.updateGameSessionState(client.getId(), GameStates.STARTED);
-        }else{
+        } else {
             GameSessionManager.closeGameSession(client.getId());
         }
 
@@ -190,7 +182,18 @@ public class ServerThread extends Thread {
         ServerThread thread = ServerThreadsManager.getInstance().getThreadByClientID(id);
         ObjectOutputStream writer = thread.getWriter();
         writer.writeObject(pDataPayload);
-        writer.flush();
+        LOGGER.info("Other Datapayload " + thread.client.getId() + " " + thread.client.getName() + " " + pDataPayload);
+
+    }
+
+    private void sendDataPayload(DataPayload dataPayload) {
+        try {
+            objectOutputStream.writeObject(dataPayload);
+            LOGGER.info("Own Datapayload " + client.getId() + " " + client.getName() + " " + dataPayload);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getClientId() {
