@@ -21,7 +21,6 @@ import services.ClientService;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PlayersListController {
     @FXML
@@ -57,27 +56,31 @@ public class PlayersListController {
     public void startThread() {
         Thread t = new Thread(() -> {
             while (running) {
-                try {
-                    Object test = _clientService.getInstance()
-                            .getObjectInputStream().readObject();
-                    System.out.println("incoming PlayerList " + test.toString());
-                    DataPayload dataPayload = (DataPayload) test;
-                    if (dataPayload.getCommand().equals(Commands.FORWARD_GAME_REQUEST.value)) {
-                        running = false;
-                        displayRequest(dataPayload);
-                    } else if (dataPayload.getCommand().equals(Commands.FORWARD_RESPONSE_GAME_REQUEST.value)) {
-                        boolean isAccepted = Boolean.parseBoolean(dataPayload.getPlainData().toString());
-                        if (isAccepted) {
+                if(!_clientService.getInstance().isClosed()) {
+                    try {
+                        Object test = _clientService.getInstance()
+                                .getObjectInputStream().readObject();
+                        System.out.println("incoming PlayerList " + test.toString());
+                        DataPayload dataPayload = (DataPayload) test;
+                        if (dataPayload.getCommand().equals(Commands.FORWARD_GAME_REQUEST.value)) {
                             running = false;
-                            openGameView();
-                        } else {
-                            System.out.println("abgelehnt");
+                            displayRequest(dataPayload);
+                        } else if (dataPayload.getCommand().equals(Commands.FORWARD_RESPONSE_GAME_REQUEST.value)) {
+                            boolean isAccepted = Boolean.parseBoolean(dataPayload.getPlainData().toString());
+                            if (isAccepted) {
+                                running = false;
+                                openGameView();
+                            } else {
+                                System.out.println("abgelehnt");
+                            }
+                        } else if (dataPayload.getCommand().equals(Commands.ANSWER_CLIENT_LIST.value)) {
+                            Platform.runLater(() -> usersList.setAll((ArrayList<User>) dataPayload.getPlainData()));
                         }
-                    } else if (dataPayload.getCommand().equals(Commands.ANSWER_CLIENT_LIST.value)) {
-                        Platform.runLater(() ->usersList.setAll((ArrayList<User>) dataPayload.getPlainData()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                }else{
+                    running = false;
                 }
                 try {
                     Thread.sleep(5);
@@ -170,6 +173,7 @@ public class PlayersListController {
         try {
             DataPayload dataPayload = new DataPayload(Commands.SEND_LOGOUT.value);
             _clientService.getInstance().sendDataPayload(dataPayload);
+            _clientService.getInstance().logout();
 
             Stage stage = (Stage) userListView.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(App.class.getResource("login.fxml"));
