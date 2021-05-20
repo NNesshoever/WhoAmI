@@ -3,7 +3,7 @@ package managers;
 import enums.GameStates;
 import models.Client;
 import models.GameSession;
-import utils.Helper;
+import utils.PersonService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +14,8 @@ public class GameSessionManager {
     private static List<GameSession> sessions = new ArrayList<>();
 
     public static synchronized GameSession openGameSession(Client client, Client opponentClient) {
-        client.setPerson(Helper.getRandomPerson());
-        opponentClient.setPerson(Helper.getRandomPerson());
+        client.setPerson(PersonService.getRandomPerson());
+        opponentClient.setPerson(PersonService.getRandomPerson());
         GameSession gameSession = new GameSession(client, opponentClient, GameStates.REQUESTED);
         sessions.add(gameSession);
         return gameSession;

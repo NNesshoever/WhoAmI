@@ -5,7 +5,7 @@ import models.Person;
 import java.util.List;
 import java.util.Random;
 
-public class Helper {
+public class PersonService {
 
     public static Person getRandomPerson() {
         List<Person> Persons = JsonService.loadJson();
