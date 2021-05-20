@@ -42,18 +42,6 @@ public class ClientManager {
         return optClient.orElse(null);
     }
 
-    public static synchronized String getNextMessage(int clientId) {
-        for (Client c : clients) {
-            if (c.getId() == clientId) continue;
-            int index = c.getMessageIndex(clientId);
-            if (c.getMessages().size() > index) {
-                c.incrementMessageIndex(clientId);
-                return "Client " + c.getId() + ":" + c.getMessages().get(index);
-            }
-        }
-        return null;
-    }
-
     public static synchronized void deleteClient(int clientID) {
         Client delete = ClientManager.getClient(clientID);
         if (delete != null) {

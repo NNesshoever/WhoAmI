@@ -9,7 +9,7 @@ public class GameSession {
     private Client opponentClient;
     private Person opponentPerson;
 
-    private GameStates currentGameState = GameStates.NOT_INITIALIZED;
+    private GameStates currentGameState;
 
     public GameSession(Client client, Client opponentClient, GameStates currentGameState) {
         this.client = client;

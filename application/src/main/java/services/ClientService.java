@@ -51,4 +51,17 @@ public class ClientService {
     public ObjectInputStream getObjectInputStream() {
         return objectInputStream;
     }
+
+    public void logout()  {
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        single_instance = null;
+    }
+
+    public boolean isClosed() {
+        return socket.isClosed();
+    }
 }
