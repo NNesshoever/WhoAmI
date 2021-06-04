@@ -3,7 +3,7 @@ module entrypoint {
     requires javafx.fxml;
     requires com.fasterxml.jackson.databind;
 
-    opens uiController to javafx.fxml;
+    opens controllers to javafx.fxml;
     exports entrypoint;
     exports models;
 }

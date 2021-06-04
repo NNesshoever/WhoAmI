@@ -1,4 +1,4 @@
-package uiController;
+package controllers;
 
 import entrypoint.App;
 import enums.Commands;
@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Base64;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GameController {
     private final String OPPONENT = "Mitspieler";

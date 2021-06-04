@@ -1,4 +1,4 @@
-package uiController;
+package controllers;
 
 import entrypoint.App;
 import enums.Commands;
@@ -171,10 +171,7 @@ public class PlayersListController {
     @FXML
     public void logoutUser() {
         try {
-            DataPayload dataPayload = new DataPayload(Commands.SEND_LOGOUT.value);
-            _clientService.getInstance().sendDataPayload(dataPayload);
             _clientService.getInstance().logout();
-
             Stage stage = (Stage) userListView.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(App.class.getResource("login.fxml"));
             Scene scene = new Scene(loader.load());
